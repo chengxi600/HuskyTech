@@ -1,0 +1,82 @@
+<!-- login page-->
+
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>My test page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <!-- Our CSS -->
+    <link rel = "stylesheet" type = "text/css" href="../stylesheets/style.css">
+    <script type="text/javascript" src="../javascripts/loginPost.js"></script>
+  </head>
+  <body>
+    <img id="bg" src="../images/background.jpg">
+    <div class="layer">
+      <div class="container-fluid home">
+        <div class="row padding home">
+          <div style="margin-top: 7%;" class="login col-3" id = "signup">
+            <h2 class="login-label text-center" style="font-weight: bold;">Login</h2>
+            <form>
+              <div class="form-group">
+                <label style="font-size: small;" for="login-username-form">User Name</label>
+                <input style="font-size: small;" type="text" class="form-control" id="login-username-form" placeholder="Enter username">
+              </div>
+              <div class="form-group">
+                <label style="font-size: small;" for="login-password-form">Password</label>
+                <input style="font-size: small;" type="password" class="form-control" id="login-password-form" placeholder="Password">
+              </div>
+              <div class="form-group form-check" style="font-size: small;">
+                <input type="checkbox" class="form-check-input" id="login-check">
+                <label class="form-check-label" for="login-check">Remember me</label>
+              </div>
+              <div class="login-btn-div">
+                <button type="button" class="btn btn-primary login-btn" id="login-btn">Login</button>
+              </div>
+            </form>
+            <p style="font-size: small; position: absolute; bottom: 0%;">Need an account? <a id = "sign-up-click" >Sign up</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="layer">
+      <div class="container-fluid home">
+        <div class="row padding home">
+          <div style="margin-top: 3.5%;" class="login col-3" id = "lognin">
+            <h2 class="login-label text-center" style="font-weight: bold;">Sign up</h2>
+            <form>
+              <div class="form-group">
+                <label style="font-size: small;" for="unam">User Name</label>
+                <input style="font-size: small;" type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter username">
+              </div>
+              <div class="form-group" style="margin-top: 15%;">
+                <label style="font-size: small;" for="exampleInputPassword1">Password</label>
+                <input style="font-size: small;" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+              </div>
+              <div class="form-group">
+                <label style="font-size: small;" for="exampleInputPassword1">Re-enter password</label>
+                <input style="font-size: small;" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+              </div>
+              <div class="form-group form-check" style="font-size: small;">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1">Remember me</label>
+              </div>
+              <div class="login-btn-div">
+                <button type="submit" class="btn btn-primary login-btn" onclick="sendPost()">Sign up</button>
+              </div>
+            </form>
+            <p style="font-size: small; position: absolute; bottom: 0%;">Have an account? <a id = "login-click">Login</a></p>
+          </div>
+        </div>
+      </div>
+
+    <!-- for bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="../js/loginPost.js"></script>
+  </body>
+</html>

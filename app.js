@@ -1,16 +1,16 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var app = express();
+const app = express();
 
 //routes
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var loginRouter = require('./routes/login');
-var employeeRouter = require('./routes/employees');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const loginRouter = require('./routes/login');
+const employeeRouter = require('./routes/employees');
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/u-home', usersRouter);
@@ -27,6 +27,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// set a cookie
+app.use(function (req, res, next) {
+  // check if client sent cookie
+  const cookie = req.cookies.cookieName;
+  if (cookie === undefined) {
+    res.redirect('/login')
+  } else {
+    // yes, cookie was already present 
+    console.log('cookie exists', cookie);
+  } 
+  next(); // <-- important!
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
