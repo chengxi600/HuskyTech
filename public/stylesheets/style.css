@@ -49,5 +49,5 @@ a {
 }
 
 #signup {
-  visibility: hidden;
+  display: none;
 }
