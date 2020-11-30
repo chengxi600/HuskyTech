@@ -1,14 +1,14 @@
 let signUp = document.getElementById("sign-up-click");
-signUp.onClick = function() {
+signUp.onClick = function(e) {
     let sign = document.getElementById("signup");
     sign.style.visibility = "visible";
-    // make hidding login
+    e.target.style.visibility = "hidden";
 };
 
 
 let loginIn = document.getElementById("login-in-click");
-loginIn.onclick = function() {
+loginIn.onclick = function(e) {
     let login = document.getElementById("lognin");
     login.style.visibility = "visible";
-    // make hidding signup
+    e.target.style.visibility = "hidden";
 }
