@@ -93,17 +93,17 @@ INSERT INTO Carriers (brand, model, carrier) VALUES
 ("HTC", "HTC U11", "T-Mobile"),
 ("HTC", "HTC 12", "Verizon");
 
-INSERT INTO Customers (registrationid, firstName, lastName, passKey) VALUES
-(29401, "Saahil", "Kumar", "i<3coding"),
-(18247, "David", "Yan", "waterbottle4"),
-(57391, "Cheng Xi", "Tsou", "smollysandwich"),
-(00283, "Ningyu", "Chen", "algo&data"),
-(28492, "Stanley", "Wu", "killuazoldyck"),
-(28474, "Anthony", "Mu", "multichatforever123"),
-(58392, "Patrick", "Yoon", "enterthegungeon"),
-(68492, "Vevey", "Zhan", "gillettecoolwave"),
-(98237, "Shawn", "Spencer", "psychfrancisco"),
-(39210, "Burton", "Guster", "psych123pharma");
+INSERT INTO Customers (registrationid, firstName, lastName, userName, passKey, salt) VALUES
+(29401, "Saahil", "Kumar", "saahilkumar", "i<3coding", "ab"),
+(18247, "David", "Yan", "yandapanda", "waterbottle4", "3c"),
+(57391, "Cheng Xi", "Tsou", "twitch_main", "smollysandwich", "9n"),
+(00283, "Ningyu", "Chen", "ningyuning", "algo&data", "Ne"),
+(28492, "Stanley", "Wu", "animelover23", "killuazoldyck", "02"),
+(28474, "Anthony", "Mu", "chicagobornandraised", "multichatforever123", "gH"),
+(58392, "Patrick", "Yoon", "californiabornchicagoraised", "enterthegungeon", "R2"),
+(68492, "Vevey", "Zhan", "vvboba", "gillettecoolwave", "D2"),
+(98237, "Shawn", "Spencer", "psychic123", "psychfrancisco", "c3"),
+(39210, "Burton", "Guster", "plutoLover", "psych123pharma", "po");
 
 INSERT INTO Orders (orderNum, customerId) VALUES
 (32473, 29401),

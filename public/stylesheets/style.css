@@ -14,9 +14,6 @@ a {
   position: relative;
 }
 
-#signup {
-  visibility: hidden;
-}
 
 .login-label {
   margin-bottom: 15%;

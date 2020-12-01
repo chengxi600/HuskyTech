@@ -4,13 +4,14 @@
 <html lang="en-US">
   <head>
     <meta charset="utf-8">
-    <title>My test page</title>
+    <title>HuskyTech</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
     <!-- Our CSS -->
     <link rel = "stylesheet" type = "text/css" href="../stylesheets/style.css">
-    <script type="text/javascript" src="../javascripts/loginPost.js"></script>
+    <script type="text/javascript" src="../javascripts/homePost.js"></script>
+    <noscript>Your browser does not support JavaScript!</noscript>
   </head>
   <body>
     <img id="bg" src="../images/background.jpg">
@@ -33,7 +34,7 @@
                 <label class="form-check-label" for="login-check">Remember me</label>
               </div>
               <div class="login-btn-div">
-                <button type="button" class="btn btn-primary login-btn" id="login-btn">Login</button>
+                <button type="button" class="btn btn-primary login-btn" onclick="sendLoginPost()" id="login-btn">Login</button>
               </div>
             </form>
             <p style="font-size: small; position: absolute; bottom: 0%;">Need an account? <a href=# onclick="toSignUp()" id = "toSignup" >Sign up</a></p>
@@ -58,7 +59,7 @@
                 <label class="form-check-label" for="signup-check">Remember me</label>
               </div>
               <div class="login-btn-div">
-                <button type="submit" class="btn btn-primary login-btn" onclick="sendPost()">Sign up</button>
+                <button type="submit" class="btn btn-primary login-btn" onclick="sendSignUpPost()">Sign up</button>
               </div>
             </form>
             <p style="font-size: small; position: absolute; bottom: 0%;">Have an account? <a href=# onclick="toLogin()" id = "toLogin">Login</a></p>
