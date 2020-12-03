@@ -1,36 +1,127 @@
-
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>HuskyTech</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <noscript>Your browser does not support JavaScript!</noscript>
 
     <!-- Bootstrap-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <!--Our CSS-->
-    <link rel = "stylesheet" type = "text/css" href="../stylesheets/styleUser.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/styleProducts.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/stylePage.css">
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
-  </head>
-  <body>
+</head>
+
+<header>
     <!--Nav bar-->
     <nav class="site-header sticky-top py-1">
-      <div class="container d-flex flex-column flex-md-row justify-content-between">
-        <a class="py-2" href="#" aria-label="Product">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mx-auto" role="img" viewBox="0 0 24 24" focusable="false"><title>Product</title><circle cx="12" cy="12" r="10"/><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"/></svg>
-        </a>
-        <a class="py-2 d-none d-md-inline-block" href="../html/usersHome.html">Home</a>
-        <a class="py-2 d-none d-md-inline-block" href="../html/usersProducts.html">Products</a>
-        <a class="py-2 d-none d-md-inline-block" href="#">Cart</a>
-        <a class="py-2 d-none d-md-inline-block" href="#">support</a>
-      </div>
+        <div class="container d-flex flex-column flex-md-row justify-content-between">
+            <a class="py-2" href="#" aria-label="Product">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mx-auto" role="img"
+                    viewBox="0 0 24 24" focusable="false">
+                    <title>Product</title>
+                    <circle cx="12" cy="12" r="10" />
+                    <path
+                        d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94" />
+                </svg>
+            </a>
+            <a class="py-2 d-none d-md-inline-block" href="../html/usersHome.html">Home</a>
+            <a class="py-2 d-none d-md-inline-block" href="../html/usersProducts.html">Products</a>
+            <a class="py-2 d-none d-md-inline-block" href="#">Cart</a>
+            <a class="py-2 d-none d-md-inline-block" href="#">support</a>
+        </div>
     </nav>
+</header>
 
-    <!-- Footer -->
-    <footer class="container text-center">
-      <h5>This site is powered by Bootstrap! And a bunch of jank JavaScript</h5>
-    </footer>
-  </body>
+<body>
+    <section class="container-fluid padding text-center">
+        <div class="row welcome product-title">
+            <div class="col-12">
+                <h1 class="display-4">Our Products</h1>
+            </div>
+            <hr>
+        </div>
+        <div id = "search" class="container-fluid padding search-container bg-light">
+                <div class="input-group col-2">
+                    <label class="form-label" for="cityInput">City
+                        <input type="text" id="cityInput" class="form-control" placeholder="City">
+                    </label>
+                </div>
+                <div class="input-group col-2">
+                    <label class="form-label" for="stateInput">State
+                        <input type="text" id="stateInput" class="form-control" placeholder="State">
+                    </label>
+                </div>
+                <div class="input-group col-2">
+                    <label class="form-label" for="zipInput">ZIP
+                        <input type="text" id="zipInput" class="form-control" placeholder="ZIP">
+                    </label>
+                </div>
+                <div class="input-group col-3">
+                    <label>Sort By
+                        <select class="custom-select" id="inputGroupSelect04"
+                            aria-label="Example select with button addon">
+                            <option selected>Price</option>
+                            <option value="1">Rating</option>
+                        </select>
+                    </label>
+                </div>
+                <div id="button-go">
+                        <button class="btn btn-outline-secondary" type="button">Button</button>
+                </div>
+    </section>
+</body>
+
+<section id="merch">
+    <div class="card-deck">
+        <div class="col-3">
+            <div class="card h-100">
+            <img src="../images/laptop.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Last updated 3 mins ago</small>
+            </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card h-100">
+            <img src="../images/phone.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Last updated 3 mins ago</small>
+            </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card h-100">
+            <img src="../images/desktop.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Last updated 3 mins ago</small>
+            </div>
+            </div>
+        </div>
+      </div>
+</section>
+
+<!-- Footer -->
+<footer class="container text-center">
+    <h5>This site is powered by Bootstrap! And a bunch of jank JavaScript</h5>
+</footer>
+
 </html>

@@ -1,0 +1,23 @@
+.search-container {
+    margin-top: 5%;
+}
+
+
+#search {
+    margin-top: 3%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center-items {
+    justify-content: center;
+}
+
+.product-title {
+    margin-top: 5%;
+}
+
+.button-go {
+    margin-left: 0%;
+}
