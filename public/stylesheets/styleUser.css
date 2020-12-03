@@ -1,0 +1,53 @@
+body {
+    font-family: 'Montserrat';
+}
+
+.site-header {
+    background-color: rgba(0, 0, 0, .85);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+}
+
+.site-header a {
+    color: #999;
+    transition: ease-in-out color .15s;
+}
+
+.site-header a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+.landing-banner {
+    background-image: url("../images/husky.png");
+    background-repeat: no-repeat;
+    background-size: 30%;
+}
+
+footer {
+    margin-top: 10%;
+    position: relative;
+    overflow: hidden;
+}
+
+.Review {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.carousel-inner {
+    width: 60%;
+    margin: auto;
+}
+
+#carouselReview {
+    margin-top: 5%;
+}
+
+.product-banner {
+    background-image: url(../images/productbanner.png);
+}
+
+.product-btn {
+    padding: 3% 20% 3% 20%;
+}
