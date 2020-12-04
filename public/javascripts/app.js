@@ -1,3 +1,8 @@
+// Sign up/Login page
+
+(function() {
+
+
 let signupLink = document.getElementById("signup");
 let loginLink = document.getElementById("login");
 
@@ -33,3 +38,21 @@ function clearForm(form) {
         }
     }
 }
+
+//Cart button animation
+
+function buttonOnClick() {
+    let buttons = document.querySelectorAll(".cart-button");
+      for (var i = 0; i < buttons.length; i++) {
+          buttons[i].onclick = (e) => {
+                e.target.innerHTML = "Added!"; 
+              setTimeout(() => {
+                e.target.innerHTML = "Add to Cart";         
+              }, 2000);
+        }
+    }
+}
+
+buttonOnClick();
+
+})();

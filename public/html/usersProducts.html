@@ -64,7 +64,7 @@
                     <input type="text" id="zipInput" class="form-control" placeholder="ZIP">
                 </label>
             </div>
-            <div class="input-group col-3">
+            <div class="input-group col-2">
                 <label>Sort By
                     <select class="custom-select" id="inputGroupSelect04" aria-label="Example select with button addon">
                         <option selected>Price</option>
@@ -72,15 +72,30 @@
                     </select>
                 </label>
             </div>
-            <div id="button-go">
-                <button class="btn btn-outline-secondary" type="button">Button</button>
-            </div>
+            <div id="button-go" class="btn-group">
+                <button type="button" class="btn btn-search btn-outline-secondary">Search</button>
+                <button type="button" class="btn btn-search btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                    <label style = "margin-right: 5px;">Laptop
+                        <input type="checkbox" id="laptop-check">
+                    </label>
+                    <label style = "margin-right: 5px;">Phone
+                        <input type="checkbox" id="phone-check">
+                    </label>
+                    <label>Desktop
+                        <input type="checkbox" id="desktop-check">
+                    </label>
+                </div>
+              </div>
+        </div>
     </section>
 
     <!-- Merch-->
     <section id="merch">
         <div class="card-deck merch-deck">
-            <div class="col-3">
+            <div class="col-3 card-container">
                 <div class="card h-100">
                     <img src="../images/laptop.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
@@ -92,14 +107,14 @@
                         <!-- Either redirect to a review page or redirect to a review page where it knows which product you are writing the review for-->
                         <a href="#" class="card-link">Write a review!</a>
                         <!-- Add some kind of alert added to cart! or animation-->
-                        <a href="#" class="card-link">Add to Cart</a>
+                        <a href="#void" class="card-link cart-button">Add to Cart</a>
                     </div>
                     <div class="card-footer">
                         <small class="text-muted">Left in stock: number in stock</small>
                     </div>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-3 card-container">
                 <div class="card h-100">
                     <img src="../images/phone.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
@@ -109,14 +124,14 @@
                     </div>
                     <div class="card-body">
                         <a href="#" class="card-link">Write a review!</a>
-                        <a href="#" class="card-link">Add to Cart</a>
+                        <a href="#void" class="card-link cart-button">Add to Cart</a>
                     </div>
                     <div class="card-footer">
                         <small class="text-muted">Left in stock: number in stock</small>
                     </div>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-3 card-container">
                 <div class="card h-100">
                     <img src="../images/desktop.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
@@ -126,14 +141,14 @@
                     </div>
                     <div class="card-body">
                         <a href="#" class="card-link">Write a review!</a>
-                        <a href="#" class="card-link">Add to Cart</a>
+                        <a href="#void" class="card-link cart-button">Add to Cart</a>
                     </div>
                     <div class="card-footer">
                         <small class="text-muted">Left in stock: number in stock</small>
                     </div>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-3 card-container">
                 <div class="card h-100">
                     <img src="../images/laptop.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
@@ -143,14 +158,14 @@
                     </div>
                     <div class="card-body">
                         <a href="#" class="card-link">Write a review!</a>
-                        <a href="#" class="card-link">Add to Cart</a>
+                        <a href="#void" class="card-link cart-button">Add to Cart</a>
                     </div>
                     <div class="card-footer">
                         <small class="text-muted">Left in stock: number in stock</small>
                     </div>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-3 card-container">
                 <div class="card h-100">
                     <img src="../images/phone.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
@@ -160,7 +175,7 @@
                     </div>
                     <div class="card-body">
                         <a href="#" class="card-link">Write a review!</a>
-                        <a href="#" class="card-link">Add to Cart</a>
+                        <a href="#void" class="card-link cart-button">Add to Cart</a>
                     </div>
                     <div class="card-footer">
                         <small class="text-muted">Left in stock: number in stock</small>

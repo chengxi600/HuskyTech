@@ -1,9 +1,13 @@
 /* This should go in every page as it styles the nav bar, body, footer. */
 
+html {
+    scroll-behavior: smooth;
+}
 
 /* Body */
 body {
     font-family: 'Montserrat';
+    overflow-x: hidden;
 }
 
 /* Nav bar */

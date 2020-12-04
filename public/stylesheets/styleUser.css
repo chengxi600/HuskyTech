@@ -4,6 +4,12 @@
     background-size: 30%;
 }
 
+.feature-banner {
+    background-image: url("../images/feature.png");
+    background-repeat: no-repeat;
+    background-size: 30%;
+}
+
 .Review {
     margin-top: 5%;
     margin-bottom: 5%;
