@@ -1,0 +1,124 @@
+<!DOCTYPE htlm> 
+<html lang = "en-US"> 
+
+
+<head>
+    <meta charset="utf-8">
+    <title>HuskyTech</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <!-- BootStrape --> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <!-- Our CSS -->
+    <link rel = "stylesheet" type = "text/css" href="../stylesheets/styleReview.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/stylePage.css">
+    <!-- stars -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <script type="text/javascript" src="../javascripts/homePost.js"></script> -->
+    <noscript>Your browser does not support JavaScript!</noscript>
+</head>
+
+<header>
+        <!--Nav bar-->
+        <nav class="site-header sticky-top py-1">
+            <div class="container d-flex flex-column flex-md-row justify-content-between">
+                <a class="py-2" href="#" aria-label="Product">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                        stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mx-auto"
+                        role="img" viewBox="0 0 24 24" focusable="false">
+                        <title>Product</title>
+                        <circle cx="12" cy="12" r="10" />
+                        <path
+                            d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94" />
+                    </svg>
+                </a>
+                <a class="py-2 d-none d-md-inline-block" href="../html/usersHome.html">Home</a>
+                <a class="py-2 d-none d-md-inline-block" href="../html/usersProducts.html">Products</a>
+                <a class="py-2 d-none d-md-inline-block" href="../html/usersCart.html">Cart</a>
+                <a class="py-2 d-none d-md-inline-block" href="../html/usersSupport.html">Support</a>
+            </div>
+        </nav>
+</header>
+
+<body>
+
+    <div class = "container top-margin">
+        <div class = "row">
+            <div class = "col">
+                <div class="card h-100">
+                    <h3 id = "brand-name"> Brand DOM Change </h3>
+                    <img src="../images/laptop.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Model goes here</h5>
+                        <p class="card-text">Price: goes here.</p>
+                        <p class="card-text">Processor: goes here</p>
+                        <p class="card-text">Ram: goes here</p>
+                    </div>
+                </div>
+            </div> 
+
+            <div id = "review-box" class = "col">
+                <h2 class = "title-middle"> Review Your Purchase </h2>
+                <label> Start Rating: 
+                    <div class="rating"> 
+                        <input type="radio" name="rating" value="5" id="5">
+                        <label for="5">☆</label> 
+                        <input type="radio" name="rating" value="4" id="4">
+                        <label for="4">☆</label> 
+                        <input type="radio" name="rating" value="3" id="3">
+                        <label for="3">☆</label> 
+                        <input type="radio" name="rating" value="2" id="2">
+                        <label for="2">☆</label>
+                        <input type="radio" name="rating" value="1" id="1">
+                        <label for="1">☆</label>
+                    </div>
+                    <div class="form-group">
+                        <label for = "commentTextArea">Add a written review:</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="20" cols = "60" placeholder="What did you like or dislie? What did you use this product for?"></textarea>
+                        <button id = "submit-btn" class="btn btn-primary"> Submit</button>
+                      </div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+
+    <div class = "container top-margin">
+        <h1>Customer Reviews</h1>
+        <div class = "single-review"> 
+            <label for="rating">Rating:</label>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star"></span>
+            <span class="fa fa-star"></span>
+            <label for="rating" class = "block">Review:</label>
+            <p>It's the same thing you see marketed in the local stores as bread machine yeast. That's the main thing I use it for and I first bought here on Amazon when I could only find it locally in the little envelopes. I do like it better. I think it gives a more consistent rise and it's way more economical.
+                By Delia on June 15, 2014
+            </p> 
+        </div>
+
+        <div class = "single-review"> 
+            <label for="rating">Rating:</label>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star"></span>
+            <span class="fa fa-star"></span>
+            <span class="fa fa-star"></span>
+            <span class="fa fa-star"></span>
+            <label for="rating" class = "block">Review:</label>
+            <p>Bought this product for the reviews on here. Was shocked when I plugged it in and connected it to my MacBook Pro. The picture was very blurry, text was fuzzy, and after a lot of tweaking, frankly -- it didn't look good. Maybe I had a different understanding of what a $200 monitor would get me. Regardless, I returned it and got an LG 4K monitor on here for $250 more and it was much more worth it.
+                All I'm saying is, if you have a MacBook Pro and are spoiled by the laptop's retina screen - or heck, even spoiled by your iPhone's retina screen - looking at this would be a downgrade. Guess I learned something about what a 1080p monitor is.
+            </p> 
+        </div>
+    </div>
+</body>
+
+<!-- Footer -->
+<footer class="container text-center">
+     <h5>This site is powered by Bootstrap! And a bunch of jank JavaScript</h5>
+ </footer>
+
+
+
+
+</html>
