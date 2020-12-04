@@ -1,0 +1,93 @@
+#review-box {
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightblue;
+    width: 20%;
+}
+
+.border-box {
+    border-style: solid;
+}
+
+
+.top-margin {
+    margin-top: 5%;
+}
+
+.block {
+    display: block;
+}
+
+#brand-name {
+    color: lightskyblue;
+}
+
+.checked {
+    color: orange;
+}
+
+.title-middle {
+    text-align: center;
+    margin-top: 1%;
+    margin-bottom: 3%;
+    border-bottom: solid;
+    border-bottom-width: 1px;
+}
+
+
+#submit-btn {
+    margin-top: 3%;
+    float: right;
+}
+
+/* Stars */
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center
+}
+
+.rating>input {
+    display: none
+}
+
+.rating>label {
+    position: relative;
+    width: 1em;
+    font-size: 2vw;
+    color: #FFD600;
+    cursor: pointer
+}
+
+.rating>label::before {
+    content: "\2605";
+    position: absolute;
+    opacity: 0
+}
+
+.rating>label:hover:before,
+.rating>label:hover~label:before {
+    opacity: 1 !important
+}
+
+.rating>input:checked~label:before {
+    opacity: 1
+}
+
+.rating:hover>input:checked~label:before {
+    opacity: 0.4
+}
+
+#customer-reviews {
+    display: flex;
+    justify-content: start;
+}
+
+
+.single-review {
+    margin-top: 3%;
+}
+
+.single-review p{
+    padding-left: 5%;
+}
