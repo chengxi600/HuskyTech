@@ -1,7 +1,5 @@
 // Sign up/Login page
 
-(function() {
-
 
 let signupLink = document.getElementById("signup");
 let loginLink = document.getElementById("login");
@@ -52,7 +50,3 @@ function buttonOnClick() {
         }
     }
 }
-
-buttonOnClick();
-
-})();

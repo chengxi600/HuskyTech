@@ -4,6 +4,11 @@ const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 //establish the connection to the database
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -20,16 +25,23 @@ connection.connect(function (err) {
     console.log('Connected to database server as id ' + connection.threadId);
 });
 
+router.get('/signup', function (req,res,next) {
+    res.send("hello");
+})
+
 //check if username exists, if not add it to database, adding a salted and hashed password
 router.post('/signup', function (req, res, next) {
+    console.log("got here");
     let firstName = req.body.firstName;
     let lastName = req.body.lastName;
     let username = req.body.username;
     let password = req.body.password;
-
+    console.log("asd");
+    
     //get all users for customers and employees, if it matches, send response with error
     connection.query('SELECT User.username FROM USERS UNION SELECT Employee.username FROM Employee', function (error, results, fields) {
         if (error) {
+            console.log("1" + error);
             res.json({
                 status: 'failure',
                 body: "Something went wrong with the server's database."
@@ -56,12 +68,13 @@ router.post('/signup', function (req, res, next) {
                             connection.escape(lastName) + ', ' + hash + ', ' + salt + ')';
                         connection.query(sqlString, function (error, results, fields) {
                             if (error) {
+                                console.log("2" + error);
                                 res.json({
                                     status: 'failure',
                                     body: "Something went wrong with the server's database."
                                 })
                             } else {
-                                res.redirect("/u-home");
+                                
                             }
                         });
                     });
@@ -187,12 +200,71 @@ router.post('/users', function (req, res, next) {
         });
 });
 
-//get the list of merchandise types
-router.get('/users/recent-items', function (req, res, next) {
-    connection.query('SELECT * FROM MERCHANDISE', function (error, results, fields) {
-        if (error) throw error;
-        console.log('The solution is: ', results[0].solution);
-    });
-});
+router.post('/search-bar', function (req, res, next) {
+    let body = req.body;
+    let city = body[0];
+    let state = body[1];
+    let zip = body[2];
+    let sortBy = body[3];
+    let filter = body[4];
+
+    finalList = [];
+
+    if (sortBy === "DESC") {
+        sortBy = "MerchandiseType.price DESC";
+    } else {
+        sortBy = "MerchandiseType.price";
+    }
+
+    if (filter.length === 0) {
+        'UPDATE users SET foo = ?, bar = ?, baz = ? WHERE id = ?'
+        connection.query('SELECT MerchandiseType.brand, MerchandiseType.model, MerchandiseType.price ' +
+            'FROM Merchandise ' +
+            'INNER JOIN Store ON (Store.City = Merchandise.shelfCity AND Store.State = Merchandise.shelfState AND Store.Zip = Merchandise.shelfZip) ' +
+            'INNER JOIN MerchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
+            'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? ' +
+            'ORDER BY ?', [city, state, zip, sortBy], function (error, results, fields) {
+                if (error) throw error;
+                let returnArr = [];
+                results.forEach(element => {
+                    let obj = {};
+                    for (const key in element) {
+                        obj[key] = element[key];
+                    }
+                    returnArr.push(obj);
+                })
+                res.json({
+                    status: 'success',
+                    body: returnArr
+                })
+            });
+    } else {
+        filter.forEach(merchType => {
+            connection.query('SELECT merchandiseType.brand, merchandiseType.model, merchandiseType.price ' +
+                'FROM Merchandise ' +
+                'INNER JOIN Store ON (Store.City = Merchandise.shelfCity AND Store.State = Merchandise.shelfState AND Store.Zip = Merchandise.shelfZip) ' +
+                'INNER JOIN merchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
+                'INNER JOIN ? ON (?.brand = merchandiseType.brand AND ?.model = merchandise.model) ' +
+                'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? ' +
+                'ORDER BY ?', [city, state, zip, merchType, merchType, merchType, sortBy], function (error, results, fields) {
+                    if (error) throw error;
+                    let returnArr = [];
+                    results.forEach(element => {
+                        let obj = {};
+                        for (const key in element) {
+                            obj[key] = element[key];
+                        }
+                        returnArr.push(obj);
+                    })
+                   finalList.concat(returnArr);
+                });
+        })
+        res.json({
+            status: 'success',
+            body: finalList
+        })
+        res.end();
+    }
+})
 
 module.exports = router;

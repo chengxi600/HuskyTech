@@ -65,10 +65,10 @@
                 </label>
             </div>
             <div class="input-group col-2">
-                <label>Sort By
-                    <select class="custom-select" id="inputGroupSelect04" aria-label="Example select with button addon">
-                        <option selected>Price</option>
-                        <option value="1">Rating</option>
+                <label>Sort By Price
+                    <select class="custom-select" id="sort-by-price" aria-label="Example select with button addon">
+                        <option selected>Ascending</option>
+                        <option value="1">Descending</option>
                     </select>
                 </label>
             </div>
@@ -94,14 +94,13 @@
 
     <!-- Merch-->
     <section id="merch">
-        <div class="card-deck merch-deck">
+        <div class="card-deck merch-deck" id="merch-parent">
             <div class="col-3 card-container">
                 <div class="card h-100">
                     <img src="../images/laptop.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">Model goes here</h5>
                         <p class="card-text">Price: goes here.</p>
-                        <p class="card-text">Specs: here</p>
                     </div>
                     <div class="card-body">
                         <!-- Either redirect to a review page or redirect to a review page where it knows which product you are writing the review for-->

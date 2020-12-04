@@ -1,68 +1,72 @@
-Create Database huskytech;
+CREATE DATABASE huskytech;
+USE huskytech;
 CREATE TABLE Employee (
-id int,
-PRIMARY KEY (id),
+username varchar(20) NOT NULL,
+PRIMARY KEY (username),
+passkey varchar(20) NOT NULL,
 firstName varchar(20) NOT NULL,
 lastName varchar(20) NOT NULL,
 title varchar(20) NOT NULL,
-reportTo int,
-FOREIGN KEY (reportTo) REFERENCES Employee(id)
+reportTo varchar(20),
+salt varchar(10) NOT NULL,
+FOREIGN KEY (reportTo) REFERENCES Employee(username)
 );
 
 CREATE TABLE Store (
 state varchar(20),
 city varchar(20),
 zip char(5), 
-manager int NOT NULL,
-FOREIGN KEY (manager) REFERENCES Employee(id),
+manager varchar(20) NOT NULL,
+FOREIGN KEY (manager) REFERENCES Employee(username),
 PRIMARY KEY (state, city, zip)
 );
 
-CREATE TABLE OnlineStores (
+CREATE TABLE OnlineStore (
 url varchar(255), 
 ofState varchar(20), 
 ofCity varchar(20), 
 ofZip char(5), 
 PRIMARY KEY (url, ofState, ofCity, ofZip), 
-FOREIGN KEY (ofState, ofCity, ofZip) REFERENCES store(state, city, zip)
+FOREIGN KEY (ofState, ofCity, ofZip) REFERENCES Store(state, city, zip)
 );
 
 CREATE TABLE WorksAt ( 
-employeeId int,
+employeeUsername varchar(20),
 ofState varchar(20),
 ofCity varchar(20), 
 ofZip char(5), 
-PRIMARY KEY (employeeId, ofState, ofCity, ofZip), 
-FOREIGN KEY (employeeId) REFERENCES employee(id), 
-FOREIGN KEY (ofState, ofCity, ofZip) REFERENCES store(state, city, zip)
+PRIMARY KEY (employeeUsername, ofState, ofCity, ofZip), 
+FOREIGN KEY (employeeUsername) REFERENCES Employee(username), 
+FOREIGN KEY (ofState, ofCity, ofZip) REFERENCES Store(state, city, zip)
 );
 
-CREATE Table Customers (
-registrationId int,
+CREATE TABLE Customer (
+username varchar(20) NOT NULL,
+passkey varchar(20) NOT NULL,
 firstName varchar(20) NOT NULL,
 lastName varchar(20) NOT NULL,
-passKey varchar(20) NOT NULL,
-PRIMARY key (registrationId)
+salt varchar(10) NOT NULL,
+PRIMARY key (username)
 );
 
-CREATE Table Orders (
+CREATE TABLE Orders (
 orderNum int,
-customerId int,
-PRIMARY Key (orderNum, customerId),
-FOREIGN Key (customerId) REFERENCES customers(registrationId)
+customerUsername varchar(20),
+PRIMARY Key (orderNum, customerUsername),
+FOREIGN Key (customerUsername) REFERENCES Customer(username)
 );
  
 
 CREATE Table OnlineOrder (
 orderNum int,
-customerId int, 
+customerUsername varchar(20), 
 state ENUM("sent", "processed", "delivered", "lost") NOT NULL, 
 ofState varchar(20) NOT NULL, 
 ofCity varchar(20) NOT NULL, 
 ofZip char(5) NOT NULL, 
 ofStreet varChar(50) NOT NULL, 
-PRIMARY Key (orderNum, customerId), 
-FOREIGN Key (customerId, orderNum) REFERENCES orders(customerId, orderNum) 
+PRIMARY Key (orderNum, customerUsername), 
+FOREIGN Key (customerUsername, orderNum) REFERENCES Orders(customerUsername, orderNum) 
 );
 
 CREATE Table merchandiseType (
@@ -80,7 +84,7 @@ space int NOT NULL,
 PRIMARY KEY (brand, model)
 );
 
-CREATE TABLE Colors (
+CREATE TABLE Color (
 brand varchar(15), 
 model varchar(30), 
 color varchar(15), 
@@ -88,7 +92,7 @@ PRIMARY KEY (brand, model, color),
 FOREIGN KEY (brand, model) REFERENCES phone(brand, model)
 );
 
-CREATE TABLE Carriers (
+CREATE TABLE Carrier (
 brand varchar(15), 
 model varchar(30), 
 carrier varchar(20), 
@@ -124,19 +128,19 @@ shelfCity varchar(20) NOT NULL,
 shelfState varchar(20) NOT NULL,
 shelfZIP varchar(5) NOT NULL,
 orderID int,
-customerID int,
+customerUsername varchar(20),
 FOREIGN KEY (brandType, modelType) REFERENCES merchandiseType (brand, model),
 FOREIGN KEY (shelfState, shelfCity, shelfZIP) REFERENCES Store(state, city, zip),
-FOREIGN KEY (orderID, customerID) REFERENCES orders(orderNum, customerID)
+FOREIGN KEY (orderID, customerUsername) REFERENCES Orders(orderNum, customerUsername)
 );
 
 CREATE TABLE Review (reviewID int,
 brandType varchar(15) ,
 modelType varchar(30),
-customerId int,
+customerUsername varchar(20),
 rating int CHECK (rating >= 1  AND rating <= 10),
 descr varchar(255),
-PRIMARY KEY(reviewID, brandType, modelType, customerID),
+PRIMARY KEY(reviewID, brandType, modelType, customerUsername),
 FOREIGN KEY(brandType, modelType) REFERENCES merchandiseType(brand, model),
-FOREIGN KEY(customerID) REFERENCES customers(registrationID)
+FOREIGN KEY(customerUsername) REFERENCES Customer(username)
 );

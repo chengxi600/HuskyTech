@@ -11,11 +11,12 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const loginRouter = require('./routes/login');
 const employeeRouter = require('./routes/employees');
+const apiRouter = require('./routes/api');
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/u-home', usersRouter);
-app.use('/e-home', employeeRouter)
-
+app.use('/e-home', employeeRouter);
+app.use('/api', apiRouter);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
