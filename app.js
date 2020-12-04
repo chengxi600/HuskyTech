@@ -6,17 +6,6 @@ const logger = require('morgan');
 
 const app = express();
 
-//routes
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const loginRouter = require('./routes/login');
-const employeeRouter = require('./routes/employees');
-const apiRouter = require('./routes/api');
-app.use('/', indexRouter);
-app.use('/login', loginRouter);
-app.use('/u-home', usersRouter);
-app.use('/e-home', employeeRouter);
-app.use('/api', apiRouter);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,6 +17,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+//routes
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const loginRouter = require('./routes/login');
+const employeeRouter = require('./routes/employees');
+const apiRouter = require('./routes/api');
+app.use('/', indexRouter);
+app.use('/login', loginRouter);
+app.use('/u-home', usersRouter);
+app.use('/e-home', employeeRouter);
+app.use('/api', apiRouter);
 
 // set a cookie
 app.use(function (req, res, next) {

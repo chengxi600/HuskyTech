@@ -3,13 +3,20 @@ function sendLoginPost() {
     let password = document.getElementById("login-password-form").value;
     let data = { username: userName, password: password }
 
-
     fetch('http://localhost:3000/api/login', { //current url of the server
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
+    }).then(response => {
+        return response.json();
+    }).then(data => {
+        if (data.status === "success") {
+            document.location.href = data.body;
+        } else {
+            alert(data.body);
+        }
     }).catch(err => {
         alert(err.message);
     })
@@ -36,8 +43,17 @@ function sendSignUpPost() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
+        }).then(response => {
+            return response.json();
+        }).then(data => {
+            console.log(data.status);
+            if (data.status === "success") {
+                document.location.href = data.body;
+            } else {
+                alert(data.body);
+            }
         }).catch(err => {
-            alert("he" + err.message);
+            alert(err.message);
         })
     } else {
         alert("Please make the passwords match.");
@@ -45,7 +61,6 @@ function sendSignUpPost() {
 
 }
 
-//
 function getTopRatedModel() {
     fetch('http://localhost:3000/api/top-rated', {
         method: 'GET',
@@ -55,11 +70,16 @@ function getTopRatedModel() {
     }).then(response => {
         return response.json();
     }).then(data => {
-        let topModel = document.getElementById("top-rated-model");
-        let topPrice = document.getElementById("top-rated-price");
-
-        topModel.innerHTML = data.modelName;
-        topPrice.innerHTML = data.modelPrice;
+        if (data.status === "success") {
+            let topModel = document.getElementById("top-rated-model");
+            let topRating = document.getElementById("top-rated-rating");
+            let model = data.body.modelName + ", " + data.body.brandName;
+            topModel.innerHTML = model;
+            let rating = data.body.rating + "/10";
+            topRating.innerHTML = rating;
+        } else {
+            alert(data.body);
+        }
     })
 }
 
@@ -98,10 +118,15 @@ function searchButton() {
         }).then(response => {
             return response.json();
         }).then(data => {
+            console.log(data.status);
+            console.log(data.body);
             let parentDiv = document.getElementById("merch-parent"); //fill id in here
+            // remove all childs
+            parentDiv.innerHTML = '';
             //parentDiv.style.display  //set to flexbox, with flex wrap
             //data will be in array
-            data.forEach(product => {
+            let pictures = ["laptop.jpg", "desktop.jpg", "phone.jpg"];
+            data.body.forEach(product => {
                 //webstorage api stores product
                 let containerDiv = document.createElement("div");
                 containerDiv.className = "col-3 card-container";
@@ -111,7 +136,7 @@ function searchButton() {
 
                 let cardImage = document.createElement("img");
                 cardImage.className = "card-img-top";
-                cardImage.src = "../images/laptop.jpg";
+                cardImage.src = "../images/" + pictures[Math.floor(Math.random()*3)];
 
                 let cardBody = document.createElement("div");
                 cardBody.className = "card-body";
@@ -124,11 +149,11 @@ function searchButton() {
 
                 let cardTitle = document.createElement("h5");
                 cardTitle.className = "card-title";
-                cardTitle.innerHTML = product.modelName;
+                cardTitle.textContent = product.model;
 
                 let cardText = document.createElement("p");
                 cardText.className = "card-text";
-                cardTitle.innerHTML = product.price;
+                cardText.textContent = "Price: $" + product.price;
 
                 let reviewLink = document.createElement("a");
                 reviewLink.href = "#";

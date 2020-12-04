@@ -3,7 +3,7 @@ USE huskytech;
 CREATE TABLE Employee (
 username varchar(20) NOT NULL,
 PRIMARY KEY (username),
-passkey varchar(20) NOT NULL,
+passkey varchar(70) NOT NULL,
 firstName varchar(20) NOT NULL,
 lastName varchar(20) NOT NULL,
 title varchar(20) NOT NULL,
@@ -42,7 +42,7 @@ FOREIGN KEY (ofState, ofCity, ofZip) REFERENCES Store(state, city, zip)
 
 CREATE TABLE Customer (
 username varchar(20) NOT NULL,
-passkey varchar(20) NOT NULL,
+passkey varchar(70) NOT NULL,
 firstName varchar(20) NOT NULL,
 lastName varchar(20) NOT NULL,
 salt varchar(10) NOT NULL,

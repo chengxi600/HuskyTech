@@ -11,13 +11,17 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+  <!-- stars -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
   <!--Our CSS-->
   <link rel="stylesheet" type="text/css" href="../stylesheets/styleUser.css">
   <link rel="stylesheet" type="text/css" href="../stylesheets/stylePage.css">
   <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+
 </head>
 
-<body>
+<body onload="getTopRatedModel()">
   <!--Nav bar-->
   <nav class="site-header sticky-top py-1">
     <div class="container d-flex flex-column flex-md-row justify-content-between">
@@ -100,7 +104,7 @@
         <div class="col-md-5 p-lg-5 mx-auto my-5">
           <h1 class="display-4 font-weight-normal" id="top-rated-model">Best Model</h1>
           <p class="lead font-weight-normal">HuskyTech's best seller!</p>
-          <p style="font-size: smaller;" class="font-weight-normal text-muted" id="top-rated-price">Price</p>
+          <p style="font-size: smaller;" class="font-weight-normal text-muted" id="top-rated-rating">Rating</p>
           <a class="btn btn-outline-secondary cart-button">Add to Cart</a>
         </div>
       </div>
@@ -131,6 +135,7 @@
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
   <script type="text/javascript" src="../javascripts/app.js"></script>
+  <script type="text/javascript" src="../javascripts/homePost.js"></script>
 </body>
 
 </html>

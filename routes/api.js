@@ -25,23 +25,18 @@ connection.connect(function (err) {
     console.log('Connected to database server as id ' + connection.threadId);
 });
 
-router.get('/signup', function (req,res,next) {
-    res.send("hello");
-})
 
 //check if username exists, if not add it to database, adding a salted and hashed password
 router.post('/signup', function (req, res, next) {
-    console.log("got here");
+    console.log(req.body);
     let firstName = req.body.firstName;
     let lastName = req.body.lastName;
     let username = req.body.username;
     let password = req.body.password;
-    console.log("asd");
     
     //get all users for customers and employees, if it matches, send response with error
-    connection.query('SELECT User.username FROM USERS UNION SELECT Employee.username FROM Employee', function (error, results, fields) {
+    connection.query('SELECT Customer.username FROM Customer UNION SELECT Employee.username FROM Employee', function (error, results, fields) {
         if (error) {
-            console.log("1" + error);
             res.json({
                 status: 'failure',
                 body: "Something went wrong with the server's database."
@@ -51,7 +46,6 @@ router.post('/signup', function (req, res, next) {
             results.forEach(element => {
                 returnArr.push(element.username);
             })
-            console.log(returnArr);
             if (returnArr.includes(username)) {
                 res.json({
                     status: 'failure',
@@ -63,10 +57,8 @@ router.post('/signup', function (req, res, next) {
                     bcrypt.hash(password, salt, function (err, hash) {
 
                         // Store hash into database
-                        sqlString = 'INSERT INTO Customers (registrationid, firstName, lastName, userName, passKey, salt) VALUES'
-                            + ' ' + connection.escape(username) + ', ' + connection.escape(firstName) + ', ' +
-                            connection.escape(lastName) + ', ' + hash + ', ' + salt + ')';
-                        connection.query(sqlString, function (error, results, fields) {
+                        connection.query('INSERT INTO Customer (firstName, lastName, userName, passKey, salt) VALUES ' + 
+                        '(?, ?, ?, ?, ?);', [firstName, lastName, username, hash, salt], function (error, results, fields) {
                             if (error) {
                                 console.log("2" + error);
                                 res.json({
@@ -74,7 +66,10 @@ router.post('/signup', function (req, res, next) {
                                     body: "Something went wrong with the server's database."
                                 })
                             } else {
-                                
+                                res.json({
+                                    status: 'success',
+                                    body: "http://localhost:3000/u-home"
+                                })
                             }
                         });
                     });
@@ -99,14 +94,17 @@ router.post('/login', function (req, res, next) {
             results.forEach(element => {
                 userArr.push(element.username);
             })
-            console.log(returnArr);
+            console.log(userArr);
             if (userArr.includes(username)) { //if in usernames of customers
-                connection.query('SELECT Customer.password FROM Customer ' +
+                connection.query('SELECT Customer.passkey FROM Customer ' +
                     'WHERE Customer.username = ' + connection.escape(username), function (error, results, fields) {
                         let myhash = results[0].password;
                         bcrypt.compare(password, myhash, function (err, result) {
                             if (result) {
-                                res.redirect('/u-home');
+                                res.json({
+                                    status: 'success',
+                                    body: "http://localhost:3000/u-home"
+                                })
                             } else {
                                 res.json({
                                     status: 'failure',
@@ -134,7 +132,10 @@ router.post('/login', function (req, res, next) {
                                     let myhash = results[0].password;
                                     bcrypt.compare(password, myhash, function (err, result) {
                                         if (result) {
-                                            res.redirect('/e-home');
+                                            res.json({
+                                                status: 'success',
+                                                body: "http://localhost:3000/e-home"
+                                            })
                                         } else {
                                             res.json({
                                                 status: 'failure',
@@ -210,20 +211,21 @@ router.post('/search-bar', function (req, res, next) {
 
     finalList = [];
 
-    if (sortBy === "DESC") {
+    console.log(sortBy);
+    if (sortBy === "Descending") {
         sortBy = "MerchandiseType.price DESC";
     } else {
         sortBy = "MerchandiseType.price";
-    }
+    };
+    console.log(sortBy);
 
     if (filter.length === 0) {
-        'UPDATE users SET foo = ?, bar = ?, baz = ? WHERE id = ?'
-        connection.query('SELECT MerchandiseType.brand, MerchandiseType.model, MerchandiseType.price ' +
+        connection.query('SELECT DISTINCT MerchandiseType.brand, MerchandiseType.model, MerchandiseType.price ' +
             'FROM Merchandise ' +
             'INNER JOIN Store ON (Store.City = Merchandise.shelfCity AND Store.State = Merchandise.shelfState AND Store.Zip = Merchandise.shelfZip) ' +
             'INNER JOIN MerchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
             'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? ' +
-            'ORDER BY ?', [city, state, zip, sortBy], function (error, results, fields) {
+            'ORDER BY ' + sortBy, [city, state, zip], function (error, results, fields) {
                 if (error) throw error;
                 let returnArr = [];
                 results.forEach(element => {
@@ -244,9 +246,9 @@ router.post('/search-bar', function (req, res, next) {
                 'FROM Merchandise ' +
                 'INNER JOIN Store ON (Store.City = Merchandise.shelfCity AND Store.State = Merchandise.shelfState AND Store.Zip = Merchandise.shelfZip) ' +
                 'INNER JOIN merchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
-                'INNER JOIN ? ON (?.brand = merchandiseType.brand AND ?.model = merchandise.model) ' +
+                'INNER JOIN ? ON (? = merchandiseType.brand AND ? = merchandise.model) ' +
                 'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? ' +
-                'ORDER BY ?', [city, state, zip, merchType, merchType, merchType, sortBy], function (error, results, fields) {
+                'ORDER BY ?', [city, state, zip, merchType, merchType + ".brand", merchType+".model", sortBy], function (error, results, fields) {
                     if (error) throw error;
                     let returnArr = [];
                     results.forEach(element => {
@@ -265,6 +267,33 @@ router.post('/search-bar', function (req, res, next) {
         })
         res.end();
     }
+})
+
+
+router.get('/top-rated', function(req, res, next) {
+    connection.query('SELECT p.brandName, p.modelName, p.rating ' +
+    'FROM (SELECT mt.brand as brandName, mt.model as modelName, AVG(r.rating) as rating ' +
+          'FROM merchandiseType mt INNER JOIN review r ON (mt.brand = r.brandType AND mt.model = r.modelType) ' +
+          'GROUP BY mt.brand, mt.model) p INNER JOIN ' +
+          '(SELECT AVG(r.rating) as rating ' +
+           'FROM MerchandiseType mt ' +
+           'INNER JOIN review r ON (mt.brand = r.brandType AND mt.model = r.modelType) ' +
+           'GROUP BY mt.brand, mt.model ' +
+           'ORDER BY rating  DESC ' +
+           'LIMIT 1) q ON p.rating = q.rating;', function (error, results, fields) {
+        if (error) {
+            res.json({
+                status: "failure",
+                body: "Something went wrong with the database."
+            })
+        } else {
+            console.log(results[0]);
+            res.json({
+                status: "success",
+                body: results[0]
+            })
+        }
+    }) 
 })
 
 module.exports = router;
