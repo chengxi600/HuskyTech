@@ -6,6 +6,7 @@ function sendLoginPost() {
     let password = document.getElementById("login-password-form").value;
     //data to be sent to backend
     let data = { username: userName, password: password }
+    window.localStorage.setItem("username", userName);
 
     fetch('http://localhost:3000/api/login', { //current url of the server
         method: 'POST',
@@ -20,7 +21,7 @@ function sendLoginPost() {
     }).then(data => {
         if (data.status === "success") {
             document.location.href = data.body;
-            window.localStorage.setItem("username", body.username);
+            //window.localStorage.setItem("username", userName);
         } else {
             alert(data.body);
         }
@@ -57,6 +58,7 @@ function sendSignUpPost() {
         }).then(data => {
             console.log(data.status);
             if (data.status === "success") {
+                window.localStorage.setItem("username", userName)
                 document.location.href = data.body;
             } else {
                 alert(data.body);
@@ -261,19 +263,19 @@ function searchButton() {
 }
 
 function getOrderNumber() {
+    let data = [window.localStorage.getItem("username")];
     fetch('http://localhost:3000/api/order-number', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: window.localStorage.getItem("username")
+        body: JSON.stringify(data)
     }).then(response => {
         return response.json();
     }).then(data => {
         if(data.status === "failure") {
             alert(data.body)
         } else{
-            console.log(data.body);
             return data.body;
         }
     }).catch(err => {

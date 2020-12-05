@@ -134,13 +134,13 @@ FOREIGN KEY (shelfState, shelfCity, shelfZIP) REFERENCES Store(state, city, zip)
 FOREIGN KEY (orderID, customerUsername) REFERENCES Orders(orderNum, customerUsername)
 );
 
-CREATE TABLE Review (reviewID int,
-brandType varchar(15) ,
+CREATE TABLE Review (
+brandType varchar(15),
 modelType varchar(30),
 customerUsername varchar(20),
 rating int CHECK (rating >= 1  AND rating <= 10),
 descr varchar(255),
-PRIMARY KEY(reviewID, brandType, modelType, customerUsername),
+PRIMARY KEY(brandType, modelType, customerUsername),
 FOREIGN KEY(brandType, modelType) REFERENCES merchandiseType(brand, model),
 FOREIGN KEY(customerUsername) REFERENCES Customer(username)
 );

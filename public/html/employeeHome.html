@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <title>HuskyTech</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <noscript>Your browser does not support JavaScript!</noscript>
+
+    <!-- Bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!--Our CSS-->
+    <link rel="stylesheet" type="text/css" href="../stylesheets/stylePage.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/styleEmployee.css">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+</head>
+
+
+<body>
+    <header>
+        <!--Nav bar-->
+        <nav class="site-header sticky-top py-1">
+            <div class="container d-flex flex-column flex-md-row justify-content-between">
+                <a class="py-2" href="#" aria-label="Product">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                        stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mx-auto"
+                        role="img" viewBox="0 0 24 24" focusable="false">
+                        <title>Product</title>
+                        <circle cx="12" cy="12" r="10" />
+                        <path
+                            d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94" />
+                    </svg>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!--Contents -->
+    <section id="e-dashboard" class="container-fluid">
+        <div class="row">
+            <div class="input-group col-6 bg-light">
+                <h3>Update Customer Order Status</h3>
+                <div class="col-12" style="margin-top: 5%;">
+                    <label class="form-label" for="usernameInput">Customer username
+                        <input type="text" id="usernameInput" class="form-control" placeholder="username">
+                    </label>
+                    <button class="btn">Query</button>
+                </div>
+                <div class="col-9" style="margin-top: 5%;">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Username's History</span>
+                    </h4>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div class="col-6">
+                                <h6 class="my-0">Order number: 1</h6>
+                                <ul>
+                                    <li>
+                                        <small class="text-muted">Galaxy 7</small>
+                                    </li>
+                                    <li>
+                                        <small class="text-muted">IPhone 8</small>
+                                    </li>
+                                    <li>
+                                        <small class="text-muted">Huawei 3</small>
+                                    </li>
+                                    <li>
+                                        <small class="text-muted">XPS 13</small>
+                                    </li>
+                                </ul>
+                                <div style="margin-top: 5%;">
+                                    <span>Total: </span>
+                                    <strong>$12</strong>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="status-select">Order Status</label>
+                                    <select class="form-control" id="status-select" style="padding: 0;">
+                                        <option>Sent</option>
+                                        <option>Processed</option>
+                                        <option>Delivered</option>
+                                        <option>Lost</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-outline-secondary"
+                                    style="padding: 1% 10% 1% 10%;">Update</button>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div class="col-6">
+                                <h6 class="my-0">Order number: 1</h6>
+                                <ul>
+                                    <li>
+                                        <small class="text-muted">Galaxy 7</small>
+                                    </li>
+                                    <li>
+                                        <small class="text-muted">IPhone 8</small>
+                                    </li>
+                                    <li>
+                                        <small class="text-muted">Huawei 3</small>
+                                    </li>
+                                    <li>
+                                        <small class="text-muted">XPS 13</small>
+                                    </li>
+                                </ul>
+                                <div style="margin-top: 5%;">
+                                    <span>Total: </span>
+                                    <strong>$12</strong>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="status-select">Order Status</label>
+                                    <select class="form-control" id="status-select" style="padding: 0;">
+                                        <option>Sent</option>
+                                        <option>Processed</option>
+                                        <option>Delivered</option>
+                                        <option>Lost</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-outline-secondary"
+                                    style="padding: 1% 10% 1% 10%;">Update</button>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div class="col-6">
+                                <h6 class="my-0">Order number: 1</h6>
+                                <ul>
+                                    <li>
+                                        <small class="text-muted">Galaxy 7</small>
+                                    </li>
+                                    <li>
+                                        <small class="text-muted">IPhone 8</small>
+                                    </li>
+                                    <li>
+                                        <small class="text-muted">Huawei 3</small>
+                                    </li>
+                                    <li>
+                                        <small class="text-muted">XPS 13</small>
+                                    </li>
+                                </ul>
+                                <div style="margin-top: 5%;">
+                                    <span>Total: </span>
+                                    <strong>$12</strong>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="status-select">Order Status</label>
+                                    <select class="form-control" id="status-select" style="padding: 0;">
+                                        <option>Sent</option>
+                                        <option>Processed</option>
+                                        <option>Delivered</option>
+                                        <option>Lost</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-outline-secondary"
+                                    style="padding: 1% 10% 1% 10%;">Update</button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6">
+                            <div id="addMerch">
+                                <h4> Restock Merchandise </h4>
+                                <label for="MerchandiseModel">Choose a Model:</label>
+                                <select name="MerchandiseModel" class="select-box" id="MerchandiseModel">
+                                    <option value="1"> DOM</option>
+                                    <option value="2"> DOM</option>
+                                    <option value="2"> DOM</option>
+                                </select>
+                                <label for="MerchandiseBrand">Choose a Brand:</label>
+                                <select name="MerchandiseBrand" class="select-box" id="MerchandiseBrand">
+                                    <option value="1"> DOM</option>
+                                    <option value="2"> DOM</option>
+                                    <option value="2"> DOM</option>
+                                </select>
+                                <label for="shelfCity">Choose a shelfCity:</label>
+                                <select name="shelfCity" class="select-box" id="shelfCity">
+                                    <option value="1"> DOM</option>
+                                    <option value="2"> DOM</option>
+                                    <option value="2"> DOM</option>
+                                </select>
+                                <label for="shelfState">Choose a shelfState:</label>
+                                <select name="shelfState" class="select-box" id="shelfState">
+                                    <option value="1"> DOM</option>
+                                    <option value="2"> DOM</option>
+                                    <option value="2"> DOM</option>
+                                </select>
+                                <label for="shelfZip">Choose a shelfZip:</label>
+                                <select name="shelfZip" class="select-box" id="shelfZip">
+                                    <option value="1"> DOM</option>
+                                    <option value="2"> DOM</option>
+                                    <option value="2"> DOM</option>
+                                </select>
+                                <button class="btn">Add</button>
+                            </div>
+                        </div class="col-6">
+                        <div class="col-6">
+                            <div id="newMerch">
+                                <h4> Add MerchandiseType </h4>
+                                <label for="MerchandiseModel">Model:
+                                    <input type="text" id="model-input" placeholder="Input a Model">
+                                </label>
+                                <label for="MerchandiseBrand">Brand:
+                                    <input type="text" id="Brand-input" placeholder="Input a Brand">
+                                </label>
+                                <label for="shelfCity">Price:
+                                    <input type="number" id="price-input" placeholder="Input a Price">
+                                </label>
+                                <button class="btn">Add</button>
+                            </div>
+                        </div class="col-6">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <h4>Store Revenues</h4>
+                    <ul>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+
+
+                            <h6>City, State, ZIP</h6>
+                            <small>Manager: Bill</small>
+                            <span>Total:</span>
+                            <strong>$12</strong>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <ul>
+                                <li style="display : inline-flex"> City </li>
+                                <li style="display : inline-flex"> State</li>
+                                <li style="display : inline-flex"> Zip </li>
+                                <li style="display : inline-flex"> Manager </li>
+                                <li style="display : inline-flex"> Total </li>
+                                <li style="display : inline-flex"> Price </li>
+                            </ul>
+
+                            <h6>City, State, ZIP</h6>
+                            <small>Manager: Bill</small>
+                            <span>Total:</span>
+                            <strong>$12</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="container text-center">
+        <h5>This site is powered by Bootstrap! And a bunch of jank JavaScript</h5>
+    </footer>
+
+    <!-- for bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="../javascripts/app.js"></script>
+    <script src="../javascripts/cartValidation.js"></script>
+    <script src="../javascripts/homePost.js"></script>
+
+</body>
+
+</html>

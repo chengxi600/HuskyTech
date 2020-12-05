@@ -293,8 +293,10 @@ router.get('/top-rated', function (req, res, next) {
         })
 })
 
+//returns a new order number, should be max_num +1 
 router.post('/order-number', function(req, res, next) {
-    let username = req.body;
+    let username = req.body[0];
+    console.log(username);
     connection.query('SELECT Max(o.orderNum) FROM customer c INNER JOIN orders o ON o.customerUsername = c.username WHERE c.username = ?;', [username], function(error, results, fields) {
         if(error) {
             res.json({
@@ -304,7 +306,7 @@ router.post('/order-number', function(req, res, next) {
         } else{
             res.json({
                 status: "success",
-                body: results[0]
+                body: results
             })
         }
     })
