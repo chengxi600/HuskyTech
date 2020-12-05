@@ -133,8 +133,6 @@ function searchButton() {
             if (data.status === "failure") {
                 alert(data.body);
             } else {
-
-
                 let parentDiv = document.getElementById("merch-parent"); //fill id in here
                 // remove all childs
                 parentDiv.innerHTML = '';
@@ -142,6 +140,7 @@ function searchButton() {
                 //data will be in array
                 let pictures = ["laptop.jpg", "desktop.jpg", "phone.jpg"];
                 console.log(data.body);
+                let count = 0;
                 data.body.forEach(product => {
                     //webstorage api stores product
                     let containerDiv = document.createElement("div");
@@ -180,6 +179,7 @@ function searchButton() {
                     cartLink.href = "#void";
                     cartLink.className = "card-link cart-button"
                     cartLink.innerHTML = "Add to Cart"
+                    cartLink.value = count;
 
                     let smallStock = document.createElement("small");
                     smallStock.className = "text-muted";
@@ -207,7 +207,24 @@ function searchButton() {
                     containerDiv.appendChild(cardDiv);
                     parentDiv.appendChild(containerDiv);
 
+                    //Local storage
+                    window.localStorage.setItem(count, JSON.stringify(product));
+
+                    //stores cart items in localStorage
+                    cartLink.onclick = (e) => {
+                        let stringData = window.localStorage.getItem(e.target.value);
+                        //generate random key for item
+                        let key = Math.floor((Math.random() * 10000000));
+                        //check for collision
+                        while (window.localStorage.getItem("c" + key) != "null") {
+                            console.log("collision!")
+                            key = Math.floor((Math.random() * 10000000));
+                        }
+                        window.localStorage.setItem("c" + key, stringData);
+                    };
+                    count++;
                 })
+                    
             }
         }).catch(err => {
             alert("Something went wrong with your request. Please try again.");

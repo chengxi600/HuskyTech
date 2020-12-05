@@ -202,11 +202,11 @@ router.post('/search-bar', function (req, res, next) {
 //          AND store.ZIP = "12921"
 //          AND Merchandise.orderId Is Not Null
 //      Group By Merchandisetype.brand, Merchandisetype.model; 
-        connection.query('SELECT DISTINCT MerchandiseType.brand, MerchandiseType.model, MerchandiseType.price, Count(*) as stocks ' +
+        connection.query('SELECT MerchandiseType.brand, MerchandiseType.model, MerchandiseType.price, Count(*) as stocks ' +
             'FROM Merchandise ' +
             'INNER JOIN Store ON (Store.City = Merchandise.shelfCity AND Store.State = Merchandise.shelfState AND Store.Zip = Merchandise.shelfZip) ' +
             'INNER JOIN MerchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
-            'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? AND Merchandise.orderId Is Not Null ' +
+            'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? AND Merchandise.orderId Is Null ' +
             "Group By Merchandisetype.brand, Merchandisetype.model " +
             'ORDER BY ' + sortBy, [city, state, zip], function (error, results, fields) {
                 if (error) {
