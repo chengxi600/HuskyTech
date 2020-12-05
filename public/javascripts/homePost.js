@@ -96,6 +96,11 @@ function getTopRatedModel() {
 }
 
 function searchButton() {
+    // clear session storage
+    window.sessionStorage.clear();
+    // remove all childs
+    let parentDiv = document.getElementById("merch-parent"); //fill id in here
+    parentDiv.innerHTML = '';
     let city = document.getElementById('cityInput').value;
     let state = document.getElementById('stateInput').value;
     let zip = document.getElementById('zipInput').value;
@@ -133,9 +138,6 @@ function searchButton() {
             if (data.status === "failure") {
                 alert(data.body);
             } else {
-                let parentDiv = document.getElementById("merch-parent"); //fill id in here
-                // remove all childs
-                parentDiv.innerHTML = '';
                 //parentDiv.style.display  //set to flexbox, with flex wrap
                 //data will be in array
                 let pictures = ["laptop.jpg", "desktop.jpg", "phone.jpg"];
@@ -208,16 +210,17 @@ function searchButton() {
                     parentDiv.appendChild(containerDiv);
 
                     //Local storage
-                    window.localStorage.setItem(count, JSON.stringify(product));
+                    window.sessionStorage.setItem(count, JSON.stringify(product));
 
                     //stores cart items in localStorage
                     cartLink.onclick = (e) => {
-                        let stringData = window.localStorage.getItem(e.target.value);
+                        let stringData = window.sessionStorage.getItem(e.target.value);
                         //generate random key for item
                         let key = Math.floor((Math.random() * 10000000));
                         //check for collision
-                        while (window.localStorage.getItem("c" + key) != "null") {
-                            console.log("collision!")
+                        while (window.localStorage.getItem("c" + key) != null) {
+                            window.localStorage.getItem("c" + key) 
+                            console.log(key);
                             key = Math.floor((Math.random() * 10000000));
                         }
                         window.localStorage.setItem("c" + key, stringData);
