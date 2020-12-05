@@ -33,7 +33,7 @@ router.post('/signup', function (req, res, next) {
     let lastName = req.body.lastName;
     let username = req.body.username;
     let password = req.body.password;
-    
+
     //get all users for customers and employees, if it matches, send response with error
     connection.query('SELECT Customer.username FROM Customer UNION SELECT Employee.username FROM Employee', function (error, results, fields) {
         if (error) {
@@ -55,23 +55,22 @@ router.post('/signup', function (req, res, next) {
                 let sqlString;
                 bcrypt.genSalt(saltRounds, function (err, salt) { //generate salt and hash
                     bcrypt.hash(password, salt, function (err, hash) {
-
                         // Store hash into database
-                        connection.query('INSERT INTO Customer (firstName, lastName, userName, passKey, salt) VALUES ' + 
-                        '(?, ?, ?, ?, ?);', [firstName, lastName, username, hash, salt], function (error, results, fields) {
-                            if (error) {
-                                console.log("2" + error);
-                                res.json({
-                                    status: 'failure',
-                                    body: "Something went wrong with the server's database."
-                                })
-                            } else {
-                                res.json({
-                                    status: 'success',
-                                    body: "http://localhost:3000/u-home"
-                                })
-                            }
-                        });
+                        connection.query('INSERT INTO Customer (firstName, lastName, userName, passKey, salt) VALUES ' +
+                            '(?, ?, ?, ?, ?);', [firstName, lastName, username, hash, salt], function (error, results, fields) {
+                                if (error) {
+                                    console.log("2" + error);
+                                    res.json({
+                                        status: 'failure',
+                                        body: "Something went wrong with the server's database."
+                                    })
+                                } else {
+                                    res.json({
+                                        status: 'success',
+                                        body: "http://localhost:3000/u-home"
+                                    })
+                                }
+                            });
                     });
                 });
             }
@@ -177,30 +176,6 @@ router.post('/employee', function (req, res, next) {
     });
 });
 
-//for users carts 
-router.post('/users', function (req, res, next) {
-    let user = req.body.username;
-    let cartNumber = req.body.orderNumber;
-    connection.query('SELECT * FROM ORDER' +
-        " WHERE Order.CustomerId = " + connection.escape(user) + " AND Order.OrderNum = " + connection.escape(cartNumber),
-        function (error, result, fields) {
-            if (error) throw error;
-            let returnArr = [];
-            result.forEach(element => {
-                let obj = {};
-                for (const key in element) {
-                    obj[key] = element[key];
-                }
-                returnArr.push(obj);
-            })
-            res.json({
-                status: 'success',
-                response: returnArr
-            });
-            res.end();
-        });
-});
-
 router.post('/search-bar', function (req, res, next) {
     let body = req.body;
     let city = body[0];
@@ -211,22 +186,26 @@ router.post('/search-bar', function (req, res, next) {
 
     finalList = [];
 
-    console.log(sortBy);
     if (sortBy === "Descending") {
         sortBy = "MerchandiseType.price DESC";
     } else {
         sortBy = "MerchandiseType.price";
     };
-    console.log(sortBy);
 
     if (filter.length === 0) {
-        connection.query('SELECT DISTINCT MerchandiseType.brand, MerchandiseType.model, MerchandiseType.price ' +
+        connection.query('SELECT DISTINCT MerchandiseType.brand, MerchandiseType.model, MerchandiseType.price, t1.Count' +
             'FROM Merchandise ' +
             'INNER JOIN Store ON (Store.City = Merchandise.shelfCity AND Store.State = Merchandise.shelfState AND Store.Zip = Merchandise.shelfZip) ' +
             'INNER JOIN MerchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
+            'INNER JOIN (SELECT COUNT(*) as Count FROM Merchandise GROUP BY MerchandiseType.brand, MerchandiseType.model) as t1 ON ' +
             'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? ' +
             'ORDER BY ' + sortBy, [city, state, zip], function (error, results, fields) {
-                if (error) throw error;
+                if (error) {
+                    res.json({
+                        status: 'failure',
+                        body: 'Invalid query. Try again.'
+                    });
+                }
                 let returnArr = [];
                 results.forEach(element => {
                     let obj = {};
@@ -238,7 +217,7 @@ router.post('/search-bar', function (req, res, next) {
                 res.json({
                     status: 'success',
                     body: returnArr
-                })
+                });
             });
     } else {
         filter.forEach(merchType => {
@@ -246,19 +225,27 @@ router.post('/search-bar', function (req, res, next) {
                 'FROM Merchandise ' +
                 'INNER JOIN Store ON (Store.City = Merchandise.shelfCity AND Store.State = Merchandise.shelfState AND Store.Zip = Merchandise.shelfZip) ' +
                 'INNER JOIN merchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
-                'INNER JOIN ? ON (? = merchandiseType.brand AND ? = merchandise.model) ' +
+                'INNER JOIN ? ON (' + connection.escapeId(merchType + ".brand", true) + ' = merchandiseType.brand AND ' +
+                connection.escapeId(merchType + ".model", true) + ' = merchandise.model) ' +
                 'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? ' +
-                'ORDER BY ?', [city, state, zip, merchType, merchType + ".brand", merchType+".model", sortBy], function (error, results, fields) {
-                    if (error) throw error;
-                    let returnArr = [];
-                    results.forEach(element => {
-                        let obj = {};
-                        for (const key in element) {
-                            obj[key] = element[key];
-                        }
-                        returnArr.push(obj);
-                    })
-                   finalList.concat(returnArr);
+                'ORDER BY ' + sortBy, [merchType, city, state, zip], function (error, results, fields) {
+                    if (error) {
+                        res.json({
+                            status: 'failure',
+                            body: 'Invalid query. Try again.'
+                        })
+                        res.end();
+                    } else {
+                        let returnArr = [];
+                        results.forEach(element => {
+                            let obj = {};
+                            for (const key in element) {
+                                obj[key] = element[key];
+                            }
+                            returnArr.push(obj);
+                        })
+                        finalList.concat(returnArr);
+                    }
                 });
         })
         res.json({
@@ -270,30 +257,30 @@ router.post('/search-bar', function (req, res, next) {
 })
 
 
-router.get('/top-rated', function(req, res, next) {
+router.get('/top-rated', function (req, res, next) {
     connection.query('SELECT p.brandName, p.modelName, p.rating ' +
-    'FROM (SELECT mt.brand as brandName, mt.model as modelName, AVG(r.rating) as rating ' +
-          'FROM merchandiseType mt INNER JOIN review r ON (mt.brand = r.brandType AND mt.model = r.modelType) ' +
-          'GROUP BY mt.brand, mt.model) p INNER JOIN ' +
-          '(SELECT AVG(r.rating) as rating ' +
-           'FROM MerchandiseType mt ' +
-           'INNER JOIN review r ON (mt.brand = r.brandType AND mt.model = r.modelType) ' +
-           'GROUP BY mt.brand, mt.model ' +
-           'ORDER BY rating  DESC ' +
-           'LIMIT 1) q ON p.rating = q.rating;', function (error, results, fields) {
-        if (error) {
-            res.json({
-                status: "failure",
-                body: "Something went wrong with the database."
-            })
-        } else {
-            console.log(results[0]);
-            res.json({
-                status: "success",
-                body: results[0]
-            })
-        }
-    }) 
+        'FROM (SELECT mt.brand as brandName, mt.model as modelName, AVG(r.rating) as rating ' +
+        'FROM merchandiseType mt INNER JOIN review r ON (mt.brand = r.brandType AND mt.model = r.modelType) ' +
+        'GROUP BY mt.brand, mt.model) p INNER JOIN ' +
+        '(SELECT AVG(r.rating) as rating ' +
+        'FROM MerchandiseType mt ' +
+        'INNER JOIN review r ON (mt.brand = r.brandType AND mt.model = r.modelType) ' +
+        'GROUP BY mt.brand, mt.model ' +
+        'ORDER BY rating  DESC ' +
+        'LIMIT 1) q ON p.rating = q.rating;', function (error, results, fields) {
+            if (error) {
+                res.json({
+                    status: "failure",
+                    body: "Something went wrong with the database."
+                })
+            } else {
+                console.log(results[0]);
+                res.json({
+                    status: "success",
+                    body: results[0]
+                })
+            }
+        })
 })
 
 module.exports = router;

@@ -75,8 +75,20 @@ function getTopRatedModel() {
             let topRating = document.getElementById("top-rated-rating");
             let model = data.body.modelName + ", " + data.body.brandName;
             topModel.innerHTML = model;
-            let rating = data.body.rating + "/10";
-            topRating.innerHTML = rating;
+            let rating = document.createElement("p");
+            rating.textContent = data.body.rating + "/10";
+            topRating.appendChild(rating);
+            for (let i = 0; i < 10; i++) {
+                let star = document.createElement("span");
+                if (i < data.body.rating) {
+                    star.className = "fa fa-star checked";
+
+                } else {
+                    star.className = "fa fa-star";
+                }
+                topRating.appendChild(star);
+            }
+
         } else {
             alert(data.body);
         }
@@ -118,74 +130,78 @@ function searchButton() {
         }).then(response => {
             return response.json();
         }).then(data => {
-            console.log(data.status);
-            console.log(data.body);
-            let parentDiv = document.getElementById("merch-parent"); //fill id in here
-            // remove all childs
-            parentDiv.innerHTML = '';
-            //parentDiv.style.display  //set to flexbox, with flex wrap
-            //data will be in array
-            let pictures = ["laptop.jpg", "desktop.jpg", "phone.jpg"];
-            data.body.forEach(product => {
-                //webstorage api stores product
-                let containerDiv = document.createElement("div");
-                containerDiv.className = "col-3 card-container";
+            if (data.status === "failure") {
+                alert(data.body);
+            } else {
 
-                let cardDiv = document.createElement("div");
-                cardDiv.className = "card h-100";
 
-                let cardImage = document.createElement("img");
-                cardImage.className = "card-img-top";
-                cardImage.src = "../images/" + pictures[Math.floor(Math.random()*3)];
+                let parentDiv = document.getElementById("merch-parent"); //fill id in here
+                // remove all childs
+                parentDiv.innerHTML = '';
+                //parentDiv.style.display  //set to flexbox, with flex wrap
+                //data will be in array
+                let pictures = ["laptop.jpg", "desktop.jpg", "phone.jpg"];
+                data.body.forEach(product => {
+                    //webstorage api stores product
+                    let containerDiv = document.createElement("div");
+                    containerDiv.className = "col-3 card-container";
 
-                let cardBody = document.createElement("div");
-                cardBody.className = "card-body";
+                    let cardDiv = document.createElement("div");
+                    cardDiv.className = "card h-100";
 
-                let cardBody2 = document.createElement("div");
-                cardBody2.className = "card-body";
+                    let cardImage = document.createElement("img");
+                    cardImage.className = "card-img-top";
+                    cardImage.src = "../images/" + pictures[Math.floor(Math.random() * 3)];
 
-                let cardFooter = document.createElement("div");
-                cardFooter.className = "card-footer";
+                    let cardBody = document.createElement("div");
+                    cardBody.className = "card-body";
 
-                let cardTitle = document.createElement("h5");
-                cardTitle.className = "card-title";
-                cardTitle.textContent = product.model;
+                    let cardBody2 = document.createElement("div");
+                    cardBody2.className = "card-body";
 
-                let cardText = document.createElement("p");
-                cardText.className = "card-text";
-                cardText.textContent = "Price: $" + product.price;
+                    let cardFooter = document.createElement("div");
+                    cardFooter.className = "card-footer";
 
-                let reviewLink = document.createElement("a");
-                reviewLink.href = "#";
-                reviewLink.className = "card-link";
-                reviewLink.innerHTML = "Write a review!";
+                    let cardTitle = document.createElement("h5");
+                    cardTitle.className = "card-title";
+                    cardTitle.textContent = product.model;
 
-                let cartLink = document.createElement("a");
-                cartLink.href = "#void";
-                cartLink.className = "card-link cart-button"
-                cartLink.innerHTML = "Add to Cart"
+                    let cardText = document.createElement("p");
+                    cardText.className = "card-text";
+                    cardText.textContent = "Price: $" + product.price;
 
-                let smallStock = document.createElement("small");
-                smallStock.className = "text-muted";
-                smallStock.innerHTML = "Left in stock: number in stock";
+                    let reviewLink = document.createElement("a");
+                    reviewLink.href = "#";
+                    reviewLink.className = "card-link";
+                    reviewLink.innerHTML = "Write a review!";
 
-                cardBody.appendChild(cardTitle);
-                cardBody.appendChild(cardText);
+                    let cartLink = document.createElement("a");
+                    cartLink.href = "#void";
+                    cartLink.className = "card-link cart-button"
+                    cartLink.innerHTML = "Add to Cart"
 
-                cardBody2.appendChild(reviewLink);
-                cardBody2.appendChild(cartLink);
+                    let smallStock = document.createElement("small");
+                    smallStock.className = "text-muted";
+                    smallStock.innerHTML = "Left in stock: number in stock";
 
-                cardFooter.appendChild(smallStock);
+                    cardBody.appendChild(cardTitle);
+                    cardBody.appendChild(cardText);
 
-                cardDiv.appendChild(cardImage);
-                cardDiv.appendChild(cardBody);
-                cardDiv.appendChild(cardBody2);
-                cardDiv.appendChild(cardFooter);
+                    cardBody2.appendChild(reviewLink);
+                    cardBody2.appendChild(cartLink);
 
-                containerDiv.appendChild(cardDiv);
-                parentDiv.appendChild(containerDiv);
+                    cardFooter.appendChild(smallStock);
 
-            })
+                    cardDiv.appendChild(cardImage);
+                    cardDiv.appendChild(cardBody);
+                    cardDiv.appendChild(cardBody2);
+                    cardDiv.appendChild(cardFooter);
+
+                    containerDiv.appendChild(cardDiv);
+                    parentDiv.appendChild(containerDiv);
+
+                })
+            }
         }).catch(err => {
             alert("Something went wrong with your request. Please try again.");
         })
