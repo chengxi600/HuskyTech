@@ -141,6 +141,7 @@ function searchButton() {
                 //parentDiv.style.display  //set to flexbox, with flex wrap
                 //data will be in array
                 let pictures = ["laptop.jpg", "desktop.jpg", "phone.jpg"];
+                console.log(data.body);
                 data.body.forEach(product => {
                     //webstorage api stores product
                     let containerDiv = document.createElement("div");
@@ -182,7 +183,13 @@ function searchButton() {
 
                     let smallStock = document.createElement("small");
                     smallStock.className = "text-muted";
-                    smallStock.innerHTML = "Left in stock: number in stock";
+                    smallStock.innerHTML = "Left in stock: ";
+                    let stock = document.createElement("span");
+                    stock.innerHTML = product.stocks
+                    if(product.stocks < 10) {
+                        stock.style.color = "red";
+                    }
+                    smallStock.appendChild(stock);
 
                     cardBody.appendChild(cardTitle);
                     cardBody.appendChild(cardText);

@@ -192,13 +192,22 @@ router.post('/search-bar', function (req, res, next) {
         sortBy = "MerchandiseType.price";
     };
 
-    if (filter.length === 0) {
-        connection.query('SELECT DISTINCT MerchandiseType.brand, MerchandiseType.model, MerchandiseType.price, t1.Count' +
+    if (filter.length === 0) { 
+//         SELECT merchandisetype.brand, merchandisetype.model, merchandisetype.price, COUNT(*) as Num
+//      FROM Merchandise 
+// 		    INNER JOIN store ON (store.City = Merchandise.shelfCity AND store.State = Merchandise.shelfState AND store.ZIP = Merchandise.shelfZIP) 
+// 		    INNER JOIN MerchandiseType ON (merchandise.brandType = merchandiseType.brand AND Merchandise.modelType = merchandiseType.model)
+//      WHERE Store.state = "Washington" 
+//          AND store.city = "Seattle" 
+//          AND store.ZIP = "12921"
+//          AND Merchandise.orderId Is Not Null
+//      Group By Merchandisetype.brand, Merchandisetype.model; 
+        connection.query('SELECT DISTINCT MerchandiseType.brand, MerchandiseType.model, MerchandiseType.price, Count(*) as stocks ' +
             'FROM Merchandise ' +
             'INNER JOIN Store ON (Store.City = Merchandise.shelfCity AND Store.State = Merchandise.shelfState AND Store.Zip = Merchandise.shelfZip) ' +
             'INNER JOIN MerchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
-            'INNER JOIN (SELECT COUNT(*) as Count FROM Merchandise GROUP BY MerchandiseType.brand, MerchandiseType.model) as t1 ON ' +
-            'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? ' +
+            'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? AND Merchandise.orderId Is Not Null ' +
+            "Group By Merchandisetype.brand, Merchandisetype.model " +
             'ORDER BY ' + sortBy, [city, state, zip], function (error, results, fields) {
                 if (error) {
                     res.json({
