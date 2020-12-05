@@ -176,6 +176,7 @@ router.post('/employee', function (req, res, next) {
     });
 });
 
+//returns task query of all merchandisetypes in a store location
 router.post('/search-bar', function (req, res, next) {
     let body = req.body;
     let city = body[0];
@@ -266,6 +267,7 @@ router.post('/search-bar', function (req, res, next) {
 })
 
 
+//returns the get rated brand and model 
 router.get('/top-rated', function (req, res, next) {
     connection.query('SELECT p.brandName, p.modelName, p.rating ' +
         'FROM (SELECT mt.brand as brandName, mt.model as modelName, AVG(r.rating) as rating ' +
@@ -283,13 +285,29 @@ router.get('/top-rated', function (req, res, next) {
                     body: "Something went wrong with the database."
                 })
             } else {
-                console.log(results[0]);
                 res.json({
                     status: "success",
                     body: results[0]
                 })
             }
         })
+})
+
+router.post('/order-number', function(req, res, next) {
+    let username = req.body;
+    connection.query('SELECT Max(o.orderNum) FROM customer c INNER JOIN orders o ON o.customerUsername = c.username WHERE c.username = ?;', [username], function(error, results, fields) {
+        if(error) {
+            res.json({
+                status: "failure",
+                body: "Something went wrong with the database."
+            })
+        } else{
+            res.json({
+                status: "success",
+                body: results[0]
+            })
+        }
+    })
 })
 
 module.exports = router;

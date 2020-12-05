@@ -1,6 +1,10 @@
+//This page should contain all functions that communicates with the backend
+
+//login button onclick
 function sendLoginPost() {
     let userName = document.getElementById("login-username-form").value;
     let password = document.getElementById("login-password-form").value;
+    //data to be sent to backend
     let data = { username: userName, password: password }
 
     fetch('http://localhost:3000/api/login', { //current url of the server
@@ -8,12 +12,15 @@ function sendLoginPost() {
         headers: {
             'Content-Type': 'application/json'
         },
+        //send to backend as a stringified json
         body: JSON.stringify(data)
     }).then(response => {
+        //backend returns the response in json form
         return response.json();
     }).then(data => {
         if (data.status === "success") {
             document.location.href = data.body;
+            window.localStorage.setItem("username", body.username);
         } else {
             alert(data.body);
         }
@@ -22,21 +29,23 @@ function sendLoginPost() {
     })
 }
 
+//signup button onclick
 function sendSignUpPost() {
     let userName = document.getElementById("signup-username-form").value;
     let password = document.getElementById("signup-password-form").value;
     let repassword = document.getElementById("signup-repassword-form").value;
     let firstName = document.getElementById("signup-firstname-form").value;
     let lastName = document.getElementById("signup-lastname-form").value;
+    //data to be sent to backend
     let data = {
         firstName: firstName,
         lastName: lastName,
         username: userName,
         password: password
     }
-    console.log(JSON.stringify(data));
-
+    //if the reinput passwords are the same
     if (password === repassword) {
+        //post request 
         fetch('http://localhost:3000/api/signup', { //current url of the server
             method: 'POST',
             headers: {
@@ -61,6 +70,8 @@ function sendSignUpPost() {
 
 }
 
+//getting top rated brand and model task query from backend
+//should be called when home page is loaded
 function getTopRatedModel() {
     fetch('http://localhost:3000/api/top-rated', {
         method: 'GET',
@@ -71,6 +82,7 @@ function getTopRatedModel() {
         return response.json();
     }).then(data => {
         if (data.status === "success") {
+            //change the DOM to display top rated model
             let topModel = document.getElementById("top-rated-model");
             let topRating = document.getElementById("top-rated-rating");
             let model = data.body.modelName + ", " + data.body.brandName;
@@ -78,6 +90,8 @@ function getTopRatedModel() {
             let rating = document.createElement("p");
             rating.textContent = data.body.rating + "/10";
             topRating.appendChild(rating);
+            
+            //creating rating stars favicon 
             for (let i = 0; i < 10; i++) {
                 let star = document.createElement("span");
                 if (i < data.body.rating) {
@@ -95,11 +109,12 @@ function getTopRatedModel() {
     })
 }
 
+//Products page searchbutton onclick
 function searchButton() {
-    // clear session storage
+    // clear session storage which holds the current search result products
     window.sessionStorage.clear();
-    // remove all childs
-    let parentDiv = document.getElementById("merch-parent"); //fill id in here
+    // remove all childs (search results from last search query)
+    let parentDiv = document.getElementById("merch-parent");
     parentDiv.innerHTML = '';
     let city = document.getElementById('cityInput').value;
     let state = document.getElementById('stateInput').value;
@@ -111,8 +126,9 @@ function searchButton() {
     let includeLaptop = document.getElementById('laptop-check').checked;
     let includeDesktop = document.getElementById('desktop-check').checked;
     let includePhone = document.getElementById('phone-check').checked;
+    
+    //creating filter array to send to backend
     let filter = []
-
     if (includeLaptop) {
         filter.push("Laptop");
     }
@@ -125,6 +141,7 @@ function searchButton() {
         filter.push("Phone");
     }
 
+    //if the search bar is not empty:
     if (city && state && zip) {
         fetch('http://localhost:3000/api/search-bar', {
             method: 'POST',
@@ -138,13 +155,15 @@ function searchButton() {
             if (data.status === "failure") {
                 alert(data.body);
             } else {
-                //parentDiv.style.display  //set to flexbox, with flex wrap
-                //data will be in array
+
+                //the three placeholder images for products
                 let pictures = ["laptop.jpg", "desktop.jpg", "phone.jpg"];
-                console.log(data.body);
+
+                //count that ids the current search result product
                 let count = 0;
+
+                //for each product, create a HTML card in DOM
                 data.body.forEach(product => {
-                    //webstorage api stores product
                     let containerDiv = document.createElement("div");
                     containerDiv.className = "col-3 card-container";
 
@@ -153,6 +172,7 @@ function searchButton() {
 
                     let cardImage = document.createElement("img");
                     cardImage.className = "card-img-top";
+                    //chooses a random picture for product
                     cardImage.src = "../images/" + pictures[Math.floor(Math.random() * 3)];
 
                     let cardBody = document.createElement("div");
@@ -181,6 +201,7 @@ function searchButton() {
                     cartLink.href = "#void";
                     cartLink.className = "card-link cart-button"
                     cartLink.innerHTML = "Add to Cart"
+                    //"Add to Cart" has a unique value so we can retrieve product information
                     cartLink.value = count;
 
                     let smallStock = document.createElement("small");
@@ -188,7 +209,7 @@ function searchButton() {
                     smallStock.innerHTML = "Left in stock: ";
                     let stock = document.createElement("span");
                     stock.innerHTML = product.stocks
-                    if(product.stocks < 10) {
+                    if (product.stocks < 10) {
                         stock.style.color = "red";
                     }
                     smallStock.appendChild(stock);
@@ -209,25 +230,27 @@ function searchButton() {
                     containerDiv.appendChild(cardDiv);
                     parentDiv.appendChild(containerDiv);
 
-                    //Local storage
+                    //Session storage for product search results since we don't want to clog up local storage
+                    //key is a unique count, value is the product information
                     window.sessionStorage.setItem(count, JSON.stringify(product));
 
-                    //stores cart items in localStorage
+                    //"Add to Cart" onclick
                     cartLink.onclick = (e) => {
+                        //get product being added to cart
                         let stringData = window.sessionStorage.getItem(e.target.value);
                         //generate random key for item
                         let key = Math.floor((Math.random() * 10000000));
                         //check for collision
-                        while (window.localStorage.getItem("c" + key) != null) {
-                            window.localStorage.getItem("c" + key) 
-                            console.log(key);
+                        while (window.localStorage.getItem("cart" + key) != null) {
+                            window.localStorage.getItem("cart" + key)
                             key = Math.floor((Math.random() * 10000000));
                         }
-                        window.localStorage.setItem("c" + key, stringData);
+                        //put cart item in localstorage
+                        window.localStorage.setItem("cart" + key, stringData);
                     };
+                    //increments count so next product has unique id
                     count++;
                 })
-                    
             }
         }).catch(err => {
             alert("Something went wrong with your request. Please try again.");
@@ -238,22 +261,28 @@ function searchButton() {
 }
 
 function getOrderNumber() {
-    fetch('http://localhost:3000/api/top-rated', {
-        method: 'GET',
+    fetch('http://localhost:3000/api/order-number', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        body: window.localStorage.getItem("username")
     }).then(response => {
         return response.json();
     }).then(data => {
-
+        if(data.status === "failure") {
+            alert(data.body)
+        } else{
+            console.log(data.body);
+            return data.body;
+        }
     }).catch(err => {
         alert("Something went wrong with your request. Please try again.");
     })
 }
 
 function submitCart() {
-    let oNum = orderNum;
+    //let oNum = 
     let username = document.getElementById("username").value;
     let address = document.getElementById("address").value;
     let city = document.getElementById("city").value;
