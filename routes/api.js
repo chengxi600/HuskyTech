@@ -185,84 +185,88 @@ router.post('/search-bar', function (req, res, next) {
     let sortBy = body[3];
     let filter = body[4];
 
-    finalList = [];
-
     if (sortBy === "Descending") {
         sortBy = "MerchandiseType.price DESC";
     } else {
         sortBy = "MerchandiseType.price";
     };
 
-    if (filter.length === 0) { 
-//         SELECT merchandisetype.brand, merchandisetype.model, merchandisetype.price, COUNT(*) as Num
-//      FROM Merchandise 
-// 		    INNER JOIN store ON (store.City = Merchandise.shelfCity AND store.State = Merchandise.shelfState AND store.ZIP = Merchandise.shelfZIP) 
-// 		    INNER JOIN MerchandiseType ON (merchandise.brandType = merchandiseType.brand AND Merchandise.modelType = merchandiseType.model)
-//      WHERE Store.state = "Washington" 
-//          AND store.city = "Seattle" 
-//          AND store.ZIP = "12921"
-//          AND Merchandise.orderId Is Not Null
-//      Group By Merchandisetype.brand, Merchandisetype.model; 
-        connection.query('SELECT MerchandiseType.brand, MerchandiseType.model, MerchandiseType.price, Count(*) as stocks ' +
-            'FROM Merchandise ' +
-            'INNER JOIN Store ON (Store.City = Merchandise.shelfCity AND Store.State = Merchandise.shelfState AND Store.Zip = Merchandise.shelfZip) ' +
-            'INNER JOIN MerchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
-            'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? AND Merchandise.orderId Is Null ' +
-            "Group By Merchandisetype.brand, Merchandisetype.model " +
-            'ORDER BY ' + sortBy, [city, state, zip], function (error, results, fields) {
-                if (error) {
-                    res.json({
-                        status: 'failure',
-                        body: 'Invalid query. Try again.'
-                    });
-                }
-                let returnArr = [];
-                results.forEach(element => {
-                    let obj = {};
-                    for (const key in element) {
-                        obj[key] = element[key];
-                    }
-                    returnArr.push(obj);
-                })
-                res.json({
-                    status: 'success',
-                    body: returnArr
-                });
-            });
+    if (filter.length > 0 && filter.every(x => { (x === "Phone" || x === "Laptop" || x === "Desktop") })) {
+        res.json({
+            status: "failure",
+            body: 'Invalid query. Try again. Invalid filter.'
+        })
     } else {
-        filter.forEach(merchType => {
-            connection.query('SELECT merchandiseType.brand, merchandiseType.model, merchandiseType.price ' +
+        console.log(filter);
+        if (filter.length === 0) {
+            connection.query('SELECT MerchandiseType.brand, MerchandiseType.model, MerchandiseType.price, Count(*) as stocks ' +
                 'FROM Merchandise ' +
                 'INNER JOIN Store ON (Store.City = Merchandise.shelfCity AND Store.State = Merchandise.shelfState AND Store.Zip = Merchandise.shelfZip) ' +
-                'INNER JOIN merchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
-                'INNER JOIN ? ON (' + connection.escapeId(merchType + ".brand", true) + ' = merchandiseType.brand AND ' +
-                connection.escapeId(merchType + ".model", true) + ' = merchandise.model) ' +
-                'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? ' +
-                'ORDER BY ' + sortBy, [merchType, city, state, zip], function (error, results, fields) {
+                'INNER JOIN MerchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
+                'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? AND Merchandise.orderId Is Null ' +
+                "Group By Merchandisetype.brand, Merchandisetype.model " +
+                'ORDER BY ' + sortBy, [city, state, zip], function (error, results, fields) {
                     if (error) {
                         res.json({
                             status: 'failure',
                             body: 'Invalid query. Try again.'
-                        })
-                        res.end();
-                    } else {
-                        let returnArr = [];
-                        results.forEach(element => {
-                            let obj = {};
-                            for (const key in element) {
-                                obj[key] = element[key];
-                            }
-                            returnArr.push(obj);
-                        })
-                        finalList.concat(returnArr);
+                        });
                     }
+                    let returnArr = [];
+                    results.forEach(element => {
+                        let obj = {};
+                        for (const key in element) {
+                            obj[key] = element[key];
+                        }
+                        returnArr.push(obj);
+                    })
+                    res.json({
+                        status: 'success',
+                        body: returnArr
+                    });
                 });
-        })
-        res.json({
-            status: 'success',
-            body: finalList
-        })
-        res.end();
+        } else {
+            let finalList = [];
+            filter.forEach(merchType => {
+
+                merchTypeBrand = merchType + ".brand";
+                merchTypeModel = merchType + ".model";
+
+                connection.query('SELECT merchandiseType.brand, merchandiseType.model, merchandiseType.price ' +
+                    'FROM Merchandise ' +
+                    'INNER JOIN Store ON (Store.City = Merchandise.shelfCity AND Store.State = Merchandise.shelfState AND Store.Zip = Merchandise.shelfZip) ' +
+                    'INNER JOIN merchandiseType ON (MerchandiseType.brand = Merchandise.brandType AND MerchandiseType.model = Merchandise.modelType) ' +
+                    'INNER JOIN ' + merchType + ' ON (' + merchTypeBrand + ' = merchandiseType.brand AND ' +
+                    merchTypeModel + ' = merchandiseType.model) ' +
+                    'WHERE Store.City = ? AND Store.State = ? AND Store.Zip = ? ' +
+                    'ORDER BY ' + sortBy, [city, state, zip], function (error, results, fields) {
+                        if (error) {
+                            console.log(error);
+                            res.json({
+                                status: 'failure',
+                                body: 'Invalid query. Try again.'
+                            })
+                        } else {
+                            let returnArr = [];
+                            results.forEach(element => {
+                                let obj = {};
+                                for (const key in element) {
+                                    obj[key] = element[key];
+                                }
+                                returnArr.push(obj);
+                            })
+                            finalList = finalList.concat(returnArr);
+                            console.log(returnArr);
+                            console.log(finalList);
+                        }
+                    });
+            })
+            console.log("finallist:" + finalList);
+            res.json({
+                status: 'success',
+                body: finalList
+            })
+        }
     }
 })
 
@@ -294,22 +298,80 @@ router.get('/top-rated', function (req, res, next) {
 })
 
 //returns a new order number, should be max_num +1 
-router.post('/order-number', function(req, res, next) {
+router.post('/order-number', function (req, res, next) {
     let username = req.body[0];
     console.log(username);
-    connection.query('SELECT Max(o.orderNum) FROM customer c INNER JOIN orders o ON o.customerUsername = c.username WHERE c.username = ?;', [username], function(error, results, fields) {
-        if(error) {
-            res.json({
-                status: "failure",
-                body: "Something went wrong with the database."
-            })
-        } else{
-            res.json({
-                status: "success",
-                body: results
-            })
-        }
-    })
+    connection.query('SELECT MAX(Orders.orderNum) as orderNum FROM Customer INNER JOIN Orders ON Orders.customerUsername = Customer.username WHERE Customer.username = ?;',
+        [username], function (error, results, fields) {
+            if (error) {
+                res.json({
+                    status: "failure",
+                    body: "Something went wrong with the database."
+                })
+            } else {
+                let returnArr = [];
+                results.forEach(element => {
+                    let obj = {};
+                    for (const key in element) {
+                        obj[key] = element[key];
+                    }
+                    returnArr.push(obj);
+                })
+                if (returnArr[0].orderNum === null) {
+                    res.json({
+                        status: "success",
+                        body: 0
+                    })
+                } else {
+                    res.json({
+                        status: "success",
+                        body: returnArr[0]
+                    })
+                }
+
+            }
+        })
 })
+
+router.post('/cartHandle', function (req, res, next) {
+    let body = req.body;
+    let oNum = body[0];
+    let username = body[1];
+    let address = body[2];
+    let city = body[3];
+    let state = body[4];
+    let zip = body[5];
+    let status = body[6];
+    let serialNum = body[7];
+
+    connection.query('INSERT INTO OnlineOrder(orderNum, customerUsername, state, ofZip, ofCity, ofState, ofStreet) ' +
+        'VALUES (?, ?,  ?, ?, ?, ?, ?)' +
+        'COMMIT; ', [oNum, username, status, zip, city, state, address], function (err, results, fields) {
+            if (error) {
+                res.json({
+                    status: "failure",
+                    body: "Something went wrong with the checkout on the backend."
+                })
+            } else {
+                console.log(results);
+                connection.query('', [], function (err3, results3, fields3) {
+                    if (err3) {
+                        res.json({
+                            status: "failure",
+                            body: "Something went wrong with the checkout on the backend."
+                        })
+                    } else {
+                        res.json({
+                            status: "success",
+                            body: `Your order was successfully processed. 
+                        Sending to ${address} ${city}, ${state}. ${zip}.
+                        Order num: ${oNum}`
+                        })
+                    }
+                });
+            }
+        })
+})
+
 
 module.exports = router;

@@ -114,7 +114,11 @@ function getTopRatedModel() {
 //Products page searchbutton onclick
 function searchButton() {
     // clear session storage which holds the current search result products
-    window.sessionStorage.clear();
+    Object.keys(sessionStorage).forEach(function(key) {
+        if(keys.includes("item")) {
+            window.ssessionStorage.removeItem(key);
+        }
+    })
     // remove all childs (search results from last search query)
     let parentDiv = document.getElementById("merch-parent");
     parentDiv.innerHTML = '';
@@ -198,6 +202,8 @@ function searchButton() {
                     reviewLink.href = "#";
                     reviewLink.className = "card-link";
                     reviewLink.innerHTML = "Write a review!";
+                    //"Add to Cart" has a unique value so we can retrieve product information
+                    reviewLink.value = count;
 
                     let cartLink = document.createElement("a");
                     cartLink.href = "#void";
@@ -234,12 +240,12 @@ function searchButton() {
 
                     //Session storage for product search results since we don't want to clog up local storage
                     //key is a unique count, value is the product information
-                    window.sessionStorage.setItem(count, JSON.stringify(product));
+                    window.sessionStorage.setItem("item"+count, JSON.stringify(product));
 
                     //"Add to Cart" onclick
                     cartLink.onclick = (e) => {
                         //get product being added to cart
-                        let stringData = window.sessionStorage.getItem(e.target.value);
+                        let stringData = window.sessionStorage.getItem("item"+e.target.value);
                         //generate random key for item
                         let key = Math.floor((Math.random() * 10000000));
                         //check for collision
@@ -250,6 +256,15 @@ function searchButton() {
                         //put cart item in localstorage
                         window.localStorage.setItem("cart" + key, stringData);
                     };
+
+                    //"Write a review!" onclick
+                    reviewLink.onclick = (e) => {
+                        //get product being reviewed
+                        let stringData = window.sessionStorage.getItem("item"+e.target.value);
+                        //remember product being reviewed
+                        window.sessionStorage.setItem("reviewItem");
+                        
+                    }
                     //increments count so next product has unique id
                     count++;
                 })
@@ -276,7 +291,7 @@ function getOrderNumber() {
         if(data.status === "failure") {
             alert(data.body)
         } else{
-            return data.body;
+            return data.body+1;
         }
     }).catch(err => {
         alert("Something went wrong with your request. Please try again.");
@@ -284,13 +299,15 @@ function getOrderNumber() {
 }
 
 function submitCart() {
-    //let oNum = 
+    let oNum = getOrderNumber();
     let username = document.getElementById("username").value;
     let address = document.getElementById("address").value;
     let city = document.getElementById("city").value;
     let state = document.getElementById("state").value;
     let zip = document.getElementById("zip").value;
     let status = "sent";
+    let brand = [];
+    let model = [];
     let data = [oNum, username, address, city, state, zip, status];
 
     fetch('http://localhost:3000/api/cartHandle', {
@@ -302,7 +319,15 @@ function submitCart() {
     }).then(response => {
         return response.json();
     }).then(data => {
-        //orderNum = data + 1;
+        if (data.status === "success") {
+            Object.keys(localStorage).forEach(function(key) {
+                if(key.includes("cart")) {
+                    window.localStorage.removeItem(key);
+                }
+            })
+        } else {
+            alert(data.body)
+        }  
     }).catch(err => {
         alert("Something went wrong with your request. Please try again.");
     })

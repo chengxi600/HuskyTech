@@ -50,11 +50,16 @@ function clearForm(form) {
     }
 }
 
+//function redirects 
+function toReview() {
+    
+}
+
 //loads the cart information to DOM in cart page
 function toCart() {
     //clears session storage which are all the items in product page
     //NOTE: we prob shouldn't clear cuz what if you click cart then click back to products page, you can't add more stuff to cart anymore
-    window.sessionStorage.clear();
+    clearItems();
 
     let cartCount = document.getElementById("cart-count");
     cartCount.innerHTML = numberOfItemsInCart();
@@ -117,6 +122,14 @@ function clearCart() {
     Object.keys(localStorage).forEach(function(key) {
         if(key.includes("cart")) {
             window.localStorage.removeItem(key);
+        }
+    })
+}
+
+function clearItems() {
+    Object.keys(sessionStorage).forEach(function(key) {
+        if(keys.includes("item")) {
+            window.ssessionStorage.removeItem(key);
         }
     })
 }
