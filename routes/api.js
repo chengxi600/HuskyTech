@@ -346,7 +346,6 @@ router.post('/submit-online-order', function (req, res, next) {
     let status = body[6];
 
 
-
     //creating a new online order for customer
     connection.query('BEGIN ' +
         'INSERT INTO OnlineOrder(orderNum, customerUsername, state, ofZip, ofCity, ofState, ofStreet) ' +
@@ -370,6 +369,7 @@ router.post('/submit-order', function(req, res, next) {
     let body = req.body;
     let oNum = body[0];
     let customerUsername = body[1];
+    console.log(body);
 
     connection.query('INSERT INTO Orders(orderNum, customerUsername) VALUES (?, ?);', [oNum, customerUsername], function (err, results, fields) {
         if(err) {
@@ -393,7 +393,8 @@ router.post('/serial-number', function (req, res, next) {
     let shelfCity = body[2];
     let shelfState = body[3];
     let shelfZip = body[4];
-
+    console.log(body);
+    
     //get an array of serial number from query
     connection.query('SELECT serial FROM Merchandise m WHERE m.brandType = ? AND m.modelType = ? AND m.shelfCity = ? ' +
         'AND m.shelfState = ? AND m.shelfZip = ?', [brand, model, shelfCity, shelfState, shelfZip], function (error, results, fields) {
@@ -403,6 +404,7 @@ router.post('/serial-number', function (req, res, next) {
                     body: "Something went wrong with the backend"
                 })
             } else {
+                console.log(results);
                 res.json({
                     status: "success",
                     body: results[0] //breaks if one customer orders the same thing twice, or if 2+ customers order one thing

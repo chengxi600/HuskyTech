@@ -303,27 +303,32 @@ function getOrderNumber() {
 }
 
 function submitOrder(oNum, username) {
-    fetch('http://localhost:3000/api/submit-order', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify([oNum, username])
-    }).then(response => {
-        return response.json();
-    }).then(data => {
-        if (data.status === "success") {
-            //Success!
-        } else {
-            alert(data.body);
-        }
-    }).catch(err => {
-        alert("Something went wrong")
+    let promise = new Promise((resolve, reject) => {
+        fetch('http://localhost:3000/api/submit-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify([oNum, username])
+        }).then(response => {
+            return response.json();
+        }).then(data => {
+            if (data.status === "success") {
+                //Success!
+                resolve();
+            } else {
+                alert(data.body);
+            }
+        }).catch(err => {
+            alert("Something went wrong with submitting your order.")
+        })
     })
+    return promise;
 }
 
 function submitCart() {
     getOrderNumber().then((oNum) => {
+        console.log("1" + oNum);
         let username = document.getElementById("username").value;
         let address = document.getElementById("address").value;
         let city = document.getElementById("city").value;
@@ -331,49 +336,52 @@ function submitCart() {
         let zip = document.getElementById("zip").value;
         let status = "sent";
         getSerialNumbers().then(serials => {
+            console.log("2" + serials);
             //submit an order
-            submitOrder();
-            //submit an online order
-            fetch('http://localhost:3000/api/submit-online-order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify([oNum, username, address, city, state, zip, status])
-            }).then(response => {
-                return response.json();
-            }).then(data => {
-                if (data.status === "success") {
-                    //remove all cart items
-                    Object.keys(localStorage).forEach(function (key) {
-                        if (key.includes("cart")) {
-                            window.localStorage.removeItem(key);
-                        }
-                    })
-                    //update inventory
-                    serials.forEach(function (serial) {
-                        fetch('http://localhost:3000/api/update-merchandise', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify([serial, oNum, username])
-                        }).then(response => {
-                            return response.json()
-                        }).then(data => {
-                            if (data.status === "success") {
-                                //success!
-                            } else {
-                                alert(data.body);
+            submitOrder(oNum, username).then(() => {
+                console.log("3");
+                //submit an online order
+                fetch('http://localhost:3000/api/submit-online-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify([oNum, username, address, city, state, zip, status])
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    if (data.status === "success") {
+                        //remove all cart items
+                        Object.keys(localStorage).forEach(function (key) {
+                            if (key.includes("cart")) {
+                                window.localStorage.removeItem(key);
                             }
                         })
-                    })
-                } else {
-                    alert(data.body)
-                }
-            }).catch(err => {
-                console.log(err);
-                alert("Something went wrong with your request. Please try again.");
+                        //update inventory
+                        serials.forEach(function (serial) {
+                            fetch('http://localhost:3000/api/update-merchandise', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify([serial, oNum, username])
+                            }).then(response => {
+                                return response.json()
+                            }).then(data => {
+                                if (data.status === "success") {
+                                    //success!
+                                } else {
+                                    alert(data.body);
+                                }
+                            })
+                        })
+                    } else {
+                        alert(data.body)
+                    }
+                }).catch(err => {
+                    console.log(err);
+                    alert("Something went wrong with your request. Please try again.");
+                })
             })
         })
     });
@@ -397,8 +405,10 @@ function getSerialNumbers() {
                 shelfCities.push(product.city);
                 shelfStates.push(product.state);
                 shelfZIPs.push(product.zip);
+                console.log("product" + product);
             }
         })
+        console.log(brands, models, shelfCities);
         let cartSerialNumbers = [];
         new Promise((resolve, reject) => {
             for (let i = 0; i < brands.length; i++) {
