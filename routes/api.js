@@ -52,14 +52,13 @@ router.post('/signup', function (req, res, next) {
                     body: "Please choose a non-existing username."
                 })
             } else { //if original username, add it to database 
-                let sqlString;
+
                 bcrypt.genSalt(saltRounds, function (err, salt) { //generate salt and hash
                     bcrypt.hash(password, salt, function (err, hash) {
                         // Store hash into database
                         connection.query('INSERT INTO Customer (firstName, lastName, userName, passKey, salt) VALUES ' +
                             '(?, ?, ?, ?, ?);', [firstName, lastName, username, hash, salt], function (error, results, fields) {
                                 if (error) {
-                                    console.log("2" + error);
                                     res.json({
                                         status: 'failure',
                                         body: "Something went wrong with the server's database."
@@ -93,22 +92,30 @@ router.post('/login', function (req, res, next) {
             results.forEach(element => {
                 userArr.push(element.username);
             })
-            console.log(userArr);
             if (userArr.includes(username)) { //if in usernames of customers
                 connection.query('SELECT Customer.passkey FROM Customer ' +
                     'WHERE Customer.username = ' + connection.escape(username), function (error, results, fields) {
-                        let myhash = results[0].password;
+                        let myhash = results[0].passkey;
+                        console.log(myhash);
                         bcrypt.compare(password, myhash, function (err, result) {
-                            if (result) {
-                                res.json({
-                                    status: 'success',
-                                    body: "http://localhost:3000/u-home"
-                                })
-                            } else {
+                            if (err) {
+                                console.log(err);
                                 res.json({
                                     status: 'failure',
                                     body: "Invalid username and/or password. Try again."
                                 })
+                            } else {
+                                if (result) {
+                                    res.json({
+                                        status: 'success',
+                                        body: "http://localhost:3000/u-home"
+                                    })
+                                } else {
+                                    res.json({
+                                        status: 'failure',
+                                        body: "Invalid username and/or password. Try again."
+                                    })
+                                }
                             }
                         });
                     });
@@ -124,21 +131,20 @@ router.post('/login', function (req, res, next) {
                         results.forEach(element => {
                             employeeArr.push(element.username);
                         })
-                        console.log(returnArr);
                         if (employeeArr.includes(username)) {
                             connection.query('SELECT Employee.password FROM Employee ' +
                                 'WHERE Employee.username = ' + connection.escape(username), function (error, results, fields) {
                                     let myhash = results[0].password;
                                     bcrypt.compare(password, myhash, function (err, result) {
-                                        if (result) {
-                                            res.json({
-                                                status: 'success',
-                                                body: "http://localhost:3000/e-home"
-                                            })
-                                        } else {
+                                        if (err) {
                                             res.json({
                                                 status: 'failure',
                                                 body: "Invalid username and/or password. Try again."
+                                            })
+                                        } else {
+                                            res.json({
+                                                status: 'success',
+                                                body: "http://localhost:3000/e-home"
                                             })
                                         }
                                     });
@@ -153,26 +159,6 @@ router.post('/login', function (req, res, next) {
                 })
             }
         }
-    });
-});
-
-//task queries entry point for employees
-router.post('/employee', function (req, res, next) {
-    let request = req.body.taskQueryNum;
-    switch (request) {
-        case 1:
-            break;
-        case 2:
-            break;
-        default:
-            res.json({
-                status: "failure",
-                body: "Invalid query."
-            })
-    }
-    connection.query('SELECT FROM EMPLOYEE', function (error, results, fields) {
-        if (error) throw error;
-        console.log('The solution is: ', results[0].solution);
     });
 });
 
@@ -349,7 +335,7 @@ router.post('/order-number', function (req, res, next) {
         })
 })
 
-router.post('/cartHandle', function (req, res, next) {
+router.post('/submit-online-order', function (req, res, next) {
     let body = req.body;
     let oNum = body[0];
     let username = body[1];
@@ -358,7 +344,7 @@ router.post('/cartHandle', function (req, res, next) {
     let state = body[4];
     let zip = body[5];
     let status = body[6];
-    let serials = body[7];
+    let serial = body[7];
 
     //creating a new online order for customer
     connection.query('INSERT INTO OnlineOrder(orderNum, customerUsername, state, ofZip, ofCity, ofState, ofStreet) ' +
@@ -370,34 +356,60 @@ router.post('/cartHandle', function (req, res, next) {
                     body: "Something went wrong with the checkout on the backend."
                 })
             } else {
-                //update cart merchandises
-                cartItems.array.forEach(serialNum => {
-                    connection.query('UPDATE Merchandise SET orderID = ? customerUserName = ?  WHERE serial = ?;',
-                        [oNum, username, serialNum], function (err2, results2, fields2) {
-                            if (err2) {
-                                res.json({
-                                    status: "failure",
-                                    body: "Something went wrong with the checkout on the backend."
-                                })
-                            }
-                        });
-                });
                 res.json({
                     status: "success",
-                    body: "Update inventory"
+                    body: "Order submitted"
                 })
             }
         })
 })
 
-// SELECT o.orderNum
-// 		FROM customer c INNER JOIN orders o ON o.customerUsername = c.username
-// WHERE c.username = ?;
 
-// SELECT mt.brand, mt.model, mt.price
-// 		FROM orders o INNER JOIN merchandise m ON m.orderID = o.orderNum AND m.customerUsername = o.customerUsername
-//         			  INNER JOIN merchandisetype mt ON mt.brand = m.brandType AND mt.model = m.modelType
-// WHERE o.orderNum = ?;
+router.post('/serial-number', function (req, res, next) {
+    let body = req.body;
+    let brand = body[0];
+    let model = body[1];
+    let shelfCity = body[2];
+    let shelfState = body[3];
+    let shelfZip = body[4];
+
+    //get an array of serial number from query
+    connection.query('SELECT serial FROM Merchandise m WHERE m.brandType = ? AND m.modelType = ? AND m.shelfCity = ? ' +
+    'AND m.shelfState = ? AND m.shelfZip = ?', [brand, model, shelfCity, shelfState, shelfZip], function (error, results, fields) {
+        if (error) {
+            res.json({
+                status: "failure",
+                body: "Something went wrong with the backend"
+            })
+        } else{
+            res.json({
+                status: "success",
+                body: results[0] //breaks if one customer orders the same thing twice, or if 2+ customers order one thing
+            })
+        }
+    })
+})
+
+router.post('update-merchandise', function (req, res, next) {
+    let body = req.body;
+    let serial = body[0];
+    let oNum = body[1];
+    let customerUsername = body[2];
+
+    connection.query('SELECT', [], function(error, results, fields) {
+        if(error) {
+            res.json({
+                status: "failure",
+                body: "Invalid query. Please try again."
+            })
+        } else{
+            res.json({
+                status: "success", 
+                body: "Updated inventory"
+            })
+        }
+    })
+})
 
 router.post('/getOrders', function (req, res, next) {
     let customer = req.body.username;
@@ -406,35 +418,67 @@ router.post('/getOrders', function (req, res, next) {
         'WHERE c.username = ?;', [customer], function (error, results, fields) {
             if (error) {
                 res.json({
-                    status: "failure", 
+                    status: "failure",
                     body: "Invalid query. Please try again."
                 })
             } else {
-                results.forEach(result => {
-                    let orderNum = results.orderNum;
-                    connection.query('SELECT mt.brand, mt.model, mt.price FROM orders o INNER JOIN merchandise m ON m.orderID = o.orderNum ' +
-                    'AND m.customerUsername = o.customerUsername INNER JOIN merchandisetype mt ON mt.brand = m.brandType AND mt.model = m.modelType ' +
-                    'WHERE o.orderNum = ? AND m.customerUsername = ?;', [orderNum, customer], function (error2, results2, fields2) {
-                        if (error) {
-                            res.json({
-                                status: "failure", 
-                                body: "Invalid query. Please try again."
+                let returnObj = {};
+                let promise = new Promise((resolve, reject) => {
+                    let count = 0;
+                    results.forEach(result => {
+                        let orderNum = result.orderNum;
+                        connection.query('SELECT mt.brand as brand, mt.model as model, mt.price as price FROM orders o INNER JOIN merchandise m ON m.orderID = o.orderNum ' +
+                            'AND m.customerUsername = o.customerUsername INNER JOIN merchandisetype mt ON mt.brand = m.brandType AND mt.model = m.modelType ' +
+                            'WHERE o.orderNum = ? AND m.customerUsername = ?;', [orderNum, customer], function (error2, results2, fields2) {
+                                if (error2) {
+                                    res.json({
+                                        status: "failure",
+                                        body: "Invalid query. Please try again."
+                                    })
+                                } else {
+                                    returnObj[orderNum] = [];
+                                    results2.forEach(result => {
+                                        returnObj[orderNum].push(result);
+                                    })
+                                    count++;
+                                    if (count === results.length) {
+                                        resolve();
+                                    }
+                                }
                             })
-                        } else {
-                            res.json({
-                                status: "success",
-                                body: ""
-                            })
-                        }
+                    })
+                })
+                promise.then(() => {
+                    res.json({
+                        status: "success",
+                        body: returnObj
                     })
                 })
             }
         })
 });
-// {
-//      objectNum : [{model : apple x, brand : apple, price : 100}, {model : apple x, brand : apple, price : 100}]
-//      objectNum : [{model : apple x, brand : apple, price : 100}, {model : apple x, brand : apple, price : 100}]
-// }
+
+// INSERT INTO merchandiseType (brand, model, price) (?, ?, ?);
+
+router.post('/addMerchType', function (req, res, next) {
+    let brand = req.body.brand;
+    let model = req.body.model;
+    let price = req.body.price;
+    connection.query('INSERT INTO merchandiseType (brand, model, price) (?, ?, ?);',
+        [brand, model, price], function (error, results, fields) {
+            if (error) {
+                res.json({
+                    status: "failure"
+                })
+            } else {
+                res.json({
+                    status: "success"
+                })
+            }
+        });
+});
+
+// stores revenues
 
 module.exports = router;
 

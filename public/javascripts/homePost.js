@@ -6,6 +6,7 @@ function sendLoginPost() {
     let password = document.getElementById("login-password-form").value;
     //data to be sent to backend
     let data = { username: userName, password: password }
+    console.log(data);
     window.localStorage.setItem("username", userName);
 
     fetch('http://localhost:3000/api/login', { //current url of the server
@@ -69,7 +70,6 @@ function sendSignUpPost() {
     } else {
         alert("Please make the passwords match.");
     }
-
 }
 
 //getting top rated brand and model task query from backend
@@ -315,14 +315,13 @@ function submitCart() {
         }
     })
 
-    let data = [oNum, username, address, city, state, zip, status, serials];
-
-    fetch('http://localhost:3000/api/cartHandle', {
+    //submit an online order
+    fetch('http://localhost:3000/api/submit-online-order', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify([oNum, username, address, city, state, zip, status])
     }).then(response => {
         return response.json();
     }).then(data => {
@@ -339,36 +338,69 @@ function submitCart() {
     }).catch(err => {
         alert("Something went wrong with your request. Please try again.");
     })
+
+    //update inventory
+    serials.forEach(function(serial) {
+        fetch('http://localhost:3000/api/update-merchandise', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify([serial, oNum, username])
+        }).then(response => {
+            return response.json()
+        }).then(data => {
+            if(data.status === "success") {
+                //success!
+            } else{
+                alert(data.body);
+            }
+        })
+    })
 }
 
+//gets serial numbers of cart items
 function getSerialNumbers() {
-    let brands = []
-    let models = []
-    
+    let brands = [];
+    let models = [];
+    let shelfCities = [];
+    let shelfStates = [];
+    let shelfZIPs = [];
+
 
     Object.keys(localStorage).forEach(function(key) {
-
-    })
-
-    fetch('http://localhost:3000/api/serial-number', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    }).then(response => {
-        return response.json()
-    }).then(data => {
-        if (data.status === "success") {
-
-        } else{
-            alert(data.body)
+        if(key.includes("cart")) {
+            let product = window.localStorage.getItem(key);
+            brands.push(product.brand);
+            models.push(product.model);
+            shelfCities.push(product.city);
+            shelfStates.push(product.state);
+            shelfZIPs.push(product.zip);
         }
     })
+    let cartSerialNumbers = [];
+    for(let i = 0; i < brands.length; i++) {
+        fetch('http://localhost:3000/api/serial-number', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify([brands[i], models[i], shelfCities[i], shelfStates[i], shelfZIPs[i]])
+        }).then(response => {
+            return response.json()
+        }).then(data => {
+            if (data.status === "success") {
+                cartSerialNumber.push(data.body);
+            } else{
+                alert(data.body)
+            }
+        })
+    }
+    return cartSerialNumbers;
 }
 
 function getOrders() {
-    let customer = document.getElementById().value;
+    let customer = document.getElementById("usernameInput").value;
     let data = {username: customer};
     fetch('http://localhost:3000/api/getOrders', {
         method: 'POST',
@@ -380,7 +412,32 @@ function getOrders() {
         return response.json()
     }).then(data => {
         if (data.status === "success") {
+            //edit DOM
+            for (const orderNum in data.body) {
+                let arr = data.body[orderNum];
+                 
+            }
+        } else{
+            alert(data.body)            
+        }
+    })
+}
 
+//TODO:
+function addMerchType() {
+    let customer = document.getElementById("usernameInput").value;
+    let data = {username: customer};
+    fetch('http://localhost:3000/api/getOrders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then(response => {
+        return response.json()
+    }).then(data => {
+        if (data.status === "success") {
+            console.log("hello " + data.body)
         } else{
             alert(data.body)
         }
