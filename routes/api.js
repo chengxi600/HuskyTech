@@ -344,13 +344,16 @@ router.post('/submit-online-order', function (req, res, next) {
     let state = body[4];
     let zip = body[5];
     let status = body[6];
-    let serial = body[7];
+
+
 
     //creating a new online order for customer
-    connection.query('INSERT INTO OnlineOrder(orderNum, customerUsername, state, ofZip, ofCity, ofState, ofStreet) ' +
-        'VALUES (?, ?,  ?, ?, ?, ?, ?)' +
-        'COMMIT; ', [oNum, username, status, zip, city, state, address], function (err, results, fields) {
-            if (error) {
+    connection.query('BEGIN ' +
+        'INSERT INTO Orders(orderNum, customerUsername) VALUES (?, ?);' + 
+        'INSERT INTO OnlineOrder(orderNum, customerUsername, state, ofZip, ofCity, ofState, ofStreet) ' +
+        'VALUES (?, ?,  ?, ?, ?, ?, ?); ' +
+        'COMMIT;', [oNum, username, oNum, username, status, zip, city, state, address], function (err, results, fields) {
+            if (err) {
                 res.json({
                     status: "failure",
                     body: "Something went wrong with the checkout on the backend."
@@ -364,6 +367,26 @@ router.post('/submit-online-order', function (req, res, next) {
         })
 })
 
+router.post('/submit-order', function(req, res, next) {
+    let body = req.body;
+    let oNum = body[0];
+    let customerUsername = body[1];
+
+    connection.query('INSERT INTO Orders(orderNum, customerUsername) VALUES (?, ?);', [oNum, customerUsername], function (err, results, fields) {
+        if(err) {
+            res.json({
+                status: "failure",
+                body: "Something wrong with submitting an order"
+            })
+        } else{
+                res.json({
+                    status: "success",
+                    body: "Order submitted"
+                })
+            }
+        }
+    })
+})
 
 router.post('/serial-number', function (req, res, next) {
     let body = req.body;
@@ -375,40 +398,41 @@ router.post('/serial-number', function (req, res, next) {
 
     //get an array of serial number from query
     connection.query('SELECT serial FROM Merchandise m WHERE m.brandType = ? AND m.modelType = ? AND m.shelfCity = ? ' +
-    'AND m.shelfState = ? AND m.shelfZip = ?', [brand, model, shelfCity, shelfState, shelfZip], function (error, results, fields) {
-        if (error) {
-            res.json({
-                status: "failure",
-                body: "Something went wrong with the backend"
-            })
-        } else{
-            res.json({
-                status: "success",
-                body: results[0] //breaks if one customer orders the same thing twice, or if 2+ customers order one thing
-            })
-        }
-    })
+        'AND m.shelfState = ? AND m.shelfZip = ?', [brand, model, shelfCity, shelfState, shelfZip], function (error, results, fields) {
+            if (error) {
+                res.json({
+                    status: "failure",
+                    body: "Something went wrong with the backend"
+                })
+            } else {
+                res.json({
+                    status: "success",
+                    body: results[0] //breaks if one customer orders the same thing twice, or if 2+ customers order one thing
+                })
+            }
+        })
 })
 
-router.post('update-merchandise', function (req, res, next) {
+router.post('/update-merchandise', function (req, res, next) {
     let body = req.body;
     let serial = body[0];
     let oNum = body[1];
     let customerUsername = body[2];
 
-    connection.query('SELECT', [], function(error, results, fields) {
-        if(error) {
-            res.json({
-                status: "failure",
-                body: "Invalid query. Please try again."
-            })
-        } else{
-            res.json({
-                status: "success", 
-                body: "Updated inventory"
-            })
-        }
-    })
+    connection.query('UPDATE Merchandise SET orderID = ? customerUsername = ? WHERE serial = ?',
+        [oNum, customerUsername, serial], function (error, results, fields) {
+            if (error) {
+                res.json({
+                    status: "failure",
+                    body: "Invalid query. Please try again."
+                })
+            } else {
+                res.json({
+                    status: "success",
+                    body: "Updated inventory"
+                })
+            }
+        })
 })
 
 router.post('/getOrders', function (req, res, next) {
