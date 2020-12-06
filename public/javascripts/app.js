@@ -128,8 +128,8 @@ function clearCart() {
 
 function clearItems() {
     Object.keys(sessionStorage).forEach(function(key) {
-        if(keys.includes("item")) {
-            window.ssessionStorage.removeItem(key);
+        if(key.includes("item")) {
+            window.sessionStorage.removeItem(key);
         }
     })
 }

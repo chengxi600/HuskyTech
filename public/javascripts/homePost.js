@@ -115,8 +115,8 @@ function getTopRatedModel() {
 function searchButton() {
     // clear session storage which holds the current search result products
     Object.keys(sessionStorage).forEach(function(key) {
-        if(keys.includes("item")) {
-            window.ssessionStorage.removeItem(key);
+        if(key.includes("item")) {
+            window.sessionStorage.removeItem(key);
         }
     })
     // remove all childs (search results from last search query)
@@ -263,7 +263,7 @@ function searchButton() {
                         let stringData = window.sessionStorage.getItem("item"+e.target.value);
                         //remember product being reviewed
                         window.sessionStorage.setItem("reviewItem");
-                        
+
                     }
                     //increments count so next product has unique id
                     count++;
@@ -306,9 +306,16 @@ function submitCart() {
     let state = document.getElementById("state").value;
     let zip = document.getElementById("zip").value;
     let status = "sent";
-    let brand = [];
-    let model = [];
-    let data = [oNum, username, address, city, state, zip, status];
+    let serials = getSerialNumbers();
+    
+    //adds all cart item information to array
+    Object.keys.forEach(function(key) {
+        if(key.includes("cart")) {
+            cartItems.push(window.localStorage.getItem(key));
+        }
+    })
+
+    let data = [oNum, username, address, city, state, zip, status, serials];
 
     fetch('http://localhost:3000/api/cartHandle', {
         method: 'POST',
@@ -320,6 +327,7 @@ function submitCart() {
         return response.json();
     }).then(data => {
         if (data.status === "success") {
+            //remove all cart items
             Object.keys(localStorage).forEach(function(key) {
                 if(key.includes("cart")) {
                     window.localStorage.removeItem(key);
@@ -333,3 +341,48 @@ function submitCart() {
     })
 }
 
+function getSerialNumbers() {
+    let brands = []
+    let models = []
+    
+
+    Object.keys(localStorage).forEach(function(key) {
+
+    })
+
+    fetch('http://localhost:3000/api/serial-number', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then(response => {
+        return response.json()
+    }).then(data => {
+        if (data.status === "success") {
+
+        } else{
+            alert(data.body)
+        }
+    })
+}
+
+function getOrders() {
+    let customer = document.getElementById().value;
+    let data = {username: customer};
+    fetch('http://localhost:3000/api/getOrders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then(response => {
+        return response.json()
+    }).then(data => {
+        if (data.status === "success") {
+
+        } else{
+            alert(data.body)
+        }
+    })
+}
