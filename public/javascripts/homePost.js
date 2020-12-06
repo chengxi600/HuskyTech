@@ -302,8 +302,24 @@ function getOrderNumber() {
     return promise;
 }
 
-function submitOrder() {
-    let user
+function submitOrder(oNum, username) {
+    fetch('http://localhost:3000/api/submit-order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify([oNum, username])
+    }).then(response => {
+        return response.json();
+    }).then(data => {
+        if (data.status === "success") {
+            //Success!
+        } else {
+            alert(data.body);
+        }
+    }).catch(err => {
+        alert("Something went wrong")
+    })
 }
 
 function submitCart() {
@@ -315,6 +331,8 @@ function submitCart() {
         let zip = document.getElementById("zip").value;
         let status = "sent";
         getSerialNumbers().then(serials => {
+            //submit an order
+            submitOrder();
             //submit an online order
             fetch('http://localhost:3000/api/submit-online-order', {
                 method: 'POST',

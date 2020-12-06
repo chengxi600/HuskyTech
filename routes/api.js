@@ -349,10 +349,9 @@ router.post('/submit-online-order', function (req, res, next) {
 
     //creating a new online order for customer
     connection.query('BEGIN ' +
-        'INSERT INTO Orders(orderNum, customerUsername) VALUES (?, ?);' + 
         'INSERT INTO OnlineOrder(orderNum, customerUsername, state, ofZip, ofCity, ofState, ofStreet) ' +
         'VALUES (?, ?,  ?, ?, ?, ?, ?); ' +
-        'COMMIT;', [oNum, username, oNum, username, status, zip, city, state, address], function (err, results, fields) {
+        'COMMIT;', [oNum, username, status, zip, city, state, address], function (err, results, fields) {
             if (err) {
                 res.json({
                     status: "failure",
@@ -384,7 +383,6 @@ router.post('/submit-order', function(req, res, next) {
                     body: "Order submitted"
                 })
             }
-        }
     })
 })
 
