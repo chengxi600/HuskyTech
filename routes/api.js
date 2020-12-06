@@ -311,15 +311,7 @@ router.post('/order-number', function (req, res, next) {
                     body: "Something went wrong with the database."
                 })
             } else {
-                let returnArr = [];
-                results.forEach(element => {
-                    let obj = {};
-                    for (const key in element) {
-                        obj[key] = element[key];
-                    }
-                    returnArr.push(obj);
-                })
-                if (returnArr[0].orderNum === null) {
+                if (results[0].orderNum === null) {
                     res.json({
                         status: "success",
                         body: 0
@@ -327,7 +319,7 @@ router.post('/order-number', function (req, res, next) {
                 } else {
                     res.json({
                         status: "success",
-                        body: returnArr[0]
+                        body: results[0].orderNum
                     })
                 }
 
@@ -347,16 +339,16 @@ router.post('/submit-online-order', function (req, res, next) {
 
 
     //creating a new online order for customer
-    connection.query('BEGIN ' +
+    connection.query(
         'INSERT INTO OnlineOrder(orderNum, customerUsername, state, ofZip, ofCity, ofState, ofStreet) ' +
-        'VALUES (?, ?,  ?, ?, ?, ?, ?); ' +
-        'COMMIT;', [oNum, username, status, zip, city, state, address], function (err, results, fields) {
+        'VALUES (?, ?,  ?, ?, ?, ?, ?);', [oNum, username, status, zip, city, state, address], function (err, results, fields) {
             if (err) {
                 res.json({
                     status: "failure",
                     body: "Something went wrong with the checkout on the backend."
                 })
             } else {
+                console.log("online order" + results);
                 res.json({
                     status: "success",
                     body: "Order submitted"
@@ -365,24 +357,21 @@ router.post('/submit-online-order', function (req, res, next) {
         })
 })
 
-router.post('/submit-order', function(req, res, next) {
+router.post('/submit-order', function (req, res, next) {
     let body = req.body;
     let oNum = body[0];
     let customerUsername = body[1];
-    console.log(body);
-
-    connection.query('INSERT INTO Orders(orderNum, customerUsername) VALUES (?, ?);', [oNum, customerUsername], function (err, results, fields) {
-        if(err) {
+    console.log("submit-order" + body);
+    connection.query('INSERT INTO Orders(orderNum, customerUsername) VALUES (?, ?);', [oNum, customerUsername], function(error, results, fields) {
+        if (error) {
             res.json({
-                status: "failure",
-                body: "Something wrong with submitting an order"
+                status: "failure"
             })
-        } else{
-                res.json({
-                    status: "success",
-                    body: "Order submitted"
-                })
-            }
+            return;
+        }
+        res.json({
+            status: "success"
+        })
     })
 })
 
@@ -393,8 +382,7 @@ router.post('/serial-number', function (req, res, next) {
     let shelfCity = body[2];
     let shelfState = body[3];
     let shelfZip = body[4];
-    console.log(body);
-    
+
     //get an array of serial number from query
     connection.query('SELECT serial FROM Merchandise m WHERE m.brandType = ? AND m.modelType = ? AND m.shelfCity = ? ' +
         'AND m.shelfState = ? AND m.shelfZip = ?', [brand, model, shelfCity, shelfState, shelfZip], function (error, results, fields) {
@@ -404,10 +392,9 @@ router.post('/serial-number', function (req, res, next) {
                     body: "Something went wrong with the backend"
                 })
             } else {
-                console.log(results);
                 res.json({
                     status: "success",
-                    body: results[0] //breaks if one customer orders the same thing twice, or if 2+ customers order one thing
+                    body: results[0].serial //breaks if one customer orders the same thing twice, or if 2+ customers order one thing
                 })
             }
         })

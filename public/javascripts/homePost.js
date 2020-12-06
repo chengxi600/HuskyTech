@@ -310,14 +310,13 @@ function submitOrder(oNum, username) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify([oNum, username])
-        }).then(response => {
+        }).then((response) => {
             return response.json();
-        }).then(data => {
-            if (data.status === "success") {
-                //Success!
-                resolve();
+        }).then((data) => {
+            if (data.status === "failure") {
+                alert("Something went wrong with the server's database");
             } else {
-                alert(data.body);
+                resolve();
             }
         }).catch(err => {
             alert("Something went wrong with submitting your order.")
@@ -328,7 +327,7 @@ function submitOrder(oNum, username) {
 
 function submitCart() {
     getOrderNumber().then((oNum) => {
-        console.log("1" + oNum);
+        console.log("1 Order Number : " + oNum);
         let username = document.getElementById("username").value;
         let address = document.getElementById("address").value;
         let city = document.getElementById("city").value;
@@ -397,43 +396,39 @@ function getSerialNumbers() {
         let shelfZIPs = [];
 
 
-        Object.keys(localStorage).forEach(function (key) {
+        Object.keys(window.localStorage).forEach(function (key) {
             if (key.includes("cart")) {
-                let product = window.localStorage.getItem(key);
+                let product = JSON.parse(window.localStorage.getItem(key));
                 brands.push(product.brand);
                 models.push(product.model);
                 shelfCities.push(product.city);
                 shelfStates.push(product.state);
                 shelfZIPs.push(product.zip);
-                console.log("product" + product);
             }
         })
-        console.log(brands, models, shelfCities);
         let cartSerialNumbers = [];
-        new Promise((resolve, reject) => {
-            for (let i = 0; i < brands.length; i++) {
-                fetch('http://localhost:3000/api/serial-number', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify([brands[i], models[i], shelfCities[i], shelfStates[i], shelfZIPs[i]])
-                }).then(response => {
-                    return response.json()
-                }).then(data => {
-                    if (data.status === "success") {
-                        cartSerialNumbers.push(data.body);
-                        if (i === brands.length - 1) {
-                            resolve(cartSerialNumbers);
-                        }
-                    } else {
-                        alert(data.body)
+        for (let i = 0; i < brands.length; i++) {
+            fetch('http://localhost:3000/api/serial-number', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify([brands[i], models[i], shelfCities[i], shelfStates[i], shelfZIPs[i]])
+            }).then(response => {
+                return response.json()
+            }).then(data => {
+                if (data.status === "success") {
+                    cartSerialNumbers.push(data.body);
+                    console.log(cartSerialNumbers);
+                    if (i === brands.length - 1) {
+                        overallResolve(cartSerialNumbers);
                     }
-                })
-            }
-        }).then(cartSerialNumbers => {
-            overallResolve(cartSerialNumbers);
-        })
+                } else {
+                    console.log("fail");
+                    alert(data.body)
+                }
+            })
+        }
     })
 
     return overallPromise;
@@ -453,6 +448,7 @@ function getOrders() {
     }).then(data => {
         if (data.status === "success") {
             //edit DOM      
+            console.log("clicked");
             let outerContainer = document.getElementById("container-orders");
             outerContainer.innerHTML = "";
             for (const orderNum in data.body) {
@@ -463,8 +459,11 @@ function getOrders() {
                 outerContainer.appendChild(containter);
                 let di = document.createElement("div");
                 di.className = "col-6";
+                let num = document.createElement("h6");
+                num.className = "my-0";
+                num.textContent = "Order Number: " + orderNum;
+                di.appendChild(num);
                 containter.appendChild(di);
-                // console.log(arr);
                 for (let i = 0; i < arr.length; i++) {
                     let l = document.createElement("li");
                     let sm = document.createElement("small");
@@ -480,6 +479,26 @@ function getOrders() {
                 let sp = document.createElement("span");
                 sp.textContent = "Total: $" + count;
                 di2.appendChild(sp);
+
+                // Button Group
+                let di3 = document.createElement("div");
+                di3.className = "col-6 form-group";
+                containter.appendChild(di3);
+                let lablel = document.createElement("lablel");
+                di3.appendChild(lablel);
+                lablel.textContent = "Order Status";
+                let sele = document.createElement("select");
+                sele.id = orderNum;
+                let states = ["Sent", "Processes", "Delivered", "Lost"];
+                for (let i = 0; i < states.length; i++) {
+                    let op = document.createElement("option");
+                    op.value = states[i];
+                    op.textContent = states[i];
+                    sele.appendChild(op);
+                }
+                di3.appendChild(sele);
+
+                sele.onclick = () => { console.log("Hello");}
             }
         } else {
             alert(data.body);
