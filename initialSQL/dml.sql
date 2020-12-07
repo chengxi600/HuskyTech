@@ -93,17 +93,17 @@ INSERT INTO Carrier (brand, model, carrier) VALUES
 ("HTC", "HTC U11", "T-Mobile"),
 ("HTC", "HTC 12", "Verizon");
 
-INSERT INTO Customer (firstName, lastName, username, passkey, salt) VALUES
-("Saahil", "Kumar", "saahilkumar00", "$2b$10$7.MLCRFPhglI5tMqQq8lPecWRW5x7CCBZuRBLwr5FxrS2vt8Ful7O", "$2b$10$7.M"),
-("David", "Yan", "yandapanda123", "$2b$10$.kOpovxWOzr.6w2F3OCLF.sD3BOU4ESi620GE525/sHcqNS1bF2Ei", "$2b$10$.kO"),
-("Cheng Xi", "Tsou", "twitch_main3", "$2b$10$$2b$10$SprEzYfbuXxEYLpXDAm5COvnishNG4pPA1iT4Doho517X3l3HRPvO", "$2b$10$Spr"),
-("Ningyu", "Chen", "ningyuning2", "$2b$10$Vca6ZGnJl.RSIIYhZd9us.H9L011FZ0pAAGygvW48DJhjclEQdAAa", "$2b$10$Vca"),
-("Stanley", "Wu", "animelove24", "$2b$10$1EyE91Y4WxUNqBYl8CFqTek06u0/O/rCyqWElF1eNFJrOZCtdiV4W", "$2b$10$1Ey"),
-("Anthony", "Mu", "mu.anthony2", "$2b$10$qL7PSqLumDlyjo/vmmXIGuYAIxNccT9/JVY5EdBK.Jxqc9GzrZynO", "$2b$10$qL7"),
-("Patrick", "Yoon", "chicagoYoon20", "$2b$10$KmR8mIvlDVqsuq9fBSMXSe/Zpt.h8KVTCHWelOmCQYJVforoj1i9a", "$2b$10$KmR"),
-("Vevey", "Zhan", "vv.zhan2", "$2b$10$PX3GNBunb363Wz/38aXaM.ENEwuLrmJGY/QDIHC3AhUR2CHIN8nPe", "$2b$10$PX3"),
-("Shawn", "Spencer", "psychic1234", "$2b$10$hOVS.QucetjYLNf7OkrHhut2KKdqSRsI5ihds.DTQo2hvOKEYdoxm", "$2b$10$hOV"),
-("Burton", "Guster", "pluto_lover6", "$2b$10$lyBEcfcg4ptUKHLuKwL9s.0q18zz8ESgDr8dGhJudLBY0k5Q2.y06", "$2b$10$lyB");
+INSERT INTO Customer (firstName, lastName, username, passkey) VALUES
+("Saahil", "Kumar", "saahilkumar00", "$2b$10$7.MLCRFPhglI5tMqQq8lPecWRW5x7CCBZuRBLwr5FxrS2vt8Ful7O"),
+("David", "Yan", "yandapanda123", "$2b$10$.kOpovxWOzr.6w2F3OCLF.sD3BOU4ESi620GE525/sHcqNS1bF2Ei"),
+("Cheng Xi", "Tsou", "twitch_main3", "$2b$10$$2b$10$SprEzYfbuXxEYLpXDAm5COvnishNG4pPA1iT4Doho517X3l3HRPvO"),
+("Ningyu", "Chen", "ningyuning2", "$2b$10$Vca6ZGnJl.RSIIYhZd9us.H9L011FZ0pAAGygvW48DJhjclEQdAAa"),
+("Stanley", "Wu", "animelove24", "$2b$10$1EyE91Y4WxUNqBYl8CFqTek06u0/O/rCyqWElF1eNFJrOZCtdiV4W"),
+("Anthony", "Mu", "mu.anthony2", "$2b$10$qL7PSqLumDlyjo/vmmXIGuYAIxNccT9/JVY5EdBK.Jxqc9GzrZynO"),
+("Patrick", "Yoon", "chicagoYoon20", "$2b$10$KmR8mIvlDVqsuq9fBSMXSe/Zpt.h8KVTCHWelOmCQYJVforoj1i9a"),
+("Vevey", "Zhan", "vv.zhan2", "$2b$10$PX3GNBunb363Wz/38aXaM.ENEwuLrmJGY/QDIHC3AhUR2CHIN8nPe"),
+("Shawn", "Spencer", "psychic1234", "$2b$10$hOVS.QucetjYLNf7OkrHhut2KKdqSRsI5ihds.DTQo2hvOKEYdoxm"),
+("Burton", "Guster", "pluto_lover6", "$2b$10$lyBEcfcg4ptUKHLuKwL9s.0q18zz8ESgDr8dGhJudLBY0k5Q2.y06");
 
 INSERT INTO Orders (orderNum, customerUsername) VALUES
 (1, "saahilkumar00"),
@@ -140,27 +140,27 @@ INSERT INTO OnlineOrder (orderNum, customerUsername, state, ofZip, ofCity, ofSta
 (1, "pluto_lover6", "lost", "29172", "Ever Grande", "Hawaii", "12 Victory Road");
 
 
-INSERT INTO Employee (firstName, lastName, title, reportTo, username, passkey, salt) VALUES
-("Nate", "Derbinsky", "CEO", NULL, "ceoDerbinsky", "mouseAndKeyboard", "12"),
-("Jayne", "Dwonson", "COO", "ceoDerbinsky", "cooDwonson", "titangames<3", "5d"),
-("Hevin", "Kart", "CTO", "ceoDerbinsky", "ctoKart", "jumanji", "dk"),
-("Melissa", "Tree", "CFO", "ceoDerbinsky", "cfoTree", "gardening4", "dl"),
-("Samir", "Kumar", "Technology Manager", "ctoKart", "samkumar630", "fork_and_knife", "0A"),
-("Jane", "Doe", "Software Developer", "samkumar630", "jDoe153", "softwareDev:)", "7d"),
-("John", "Smith", "QA Analyst", "samkumar630", "jSmith018", "qaAnalyst:(", "Db"),
-("Rodney", "Fisher", "HR Representative", "cooDwonson", "rFisher", "fishinLover", "dd"),
-("Bill", "Bob", "Financial Manager", "cfoTree", "bbill", "moneymanager", "lE"),
-("Bubba", "Kumar", "Salesman", "bbill", "bubba_sales", "lovesSqueakyToys", "pq"),
-("Tyler", "Blevins", "Janitor", "rFisher", "tyBlevins", "janitor4lyfe", "nY"),
-("Clare", "Crawley", "Hiring Manager", "rFisher", "clareC", "dale_moss", "q3"),
-("Gordo", "Foodsey", "Chef", "rFisher", "gordofoodsey", "yukihirasoma", "0U"),
-("Peter", "Pilot", "Consulting Intern", "clareC", "pPilot", "bbBachelorbb", "Pl"),
-("Tony", "Shark", "Data Analyst Co-op", "jDoe153", "tonySh", "sokovia_accords", "lk"),
-("Naruto", "Uzumaki", "Food Manager", "rFisher", "nUzu123", "shippuden", "e4"),
-("Lucina", "Kumar", "Electrical Engineer", "bubba_sales", "lucinaK52", "huskyy.lucina", "95"),
-("Giles", "Corey", "Stonemason", "clareC", "gCoreyToS", "mafclaimingvig", "rC"),
-("Abby", "Yu", "Quality Manager", "ceoDerbinsky", "yu.abigail", "yugotaproblem", "pz"),
-("James", "Pond", "Gardener", "rFisher", "jPond007", "skyfall.adele", "LQ");
+INSERT INTO Employee (firstName, lastName, title, reportTo, username, passkey) VALUES
+("Nate", "Derbinsky", "CEO", NULL, "ceoDerbinsky", "$2b$10$EF0EGtF8g2nDUZAtKqBZ7.An6wtnDiLh72b2YsYE6WhBnQWApwUh."),
+("Jayne", "Dwonson", "COO", "ceoDerbinsky", "cooDwonson", "$2b$10$luiihS7/RwoqDvVP1uyBduGAsibI6PuphywhX7zr3pHUrc/U2IgIG"),
+("Hevin", "Kart", "CTO", "ceoDerbinsky", "ctoKart", "$2b$10$JsWfvnC5/Fr6a3DQL1GOiO1iRo3QyamJshetbL4R2HGhZEfYOYr3G",),
+("Melissa", "Tree", "CFO", "ceoDerbinsky", "cfoTree", "$2b$10$J4O8Y56jtYsWXM6IA5V8lOlbRz1ylpjhpUPSmJ/pTcJAs2crxC4.."),
+("Samir", "Kumar", "Technology Manager", "ctoKart", "samkumar630", "$2b$10$0r/yLBeFZ9DHb5P79WfwzO2KWCk9zWqPH2oxu2U9z5RktrLyr8e2a"),
+("Jane", "Doe", "Software Developer", "samkumar630", "jDoe153", "$2b$10$ufOLJOPoqDkYMpebWYvoG.sx/rJD4aNoWsmxhLxtHVkPdptdhNuLW"),
+("John", "Smith", "QA Analyst", "samkumar630", "jSmith018", "$2b$10$dl74wu6Oi4lNDelzM5mqse/CW894eizDXmy3t5zpU8xNCJ5OQFVsG"),
+("Rodney", "Fisher", "HR Representative", "cooDwonson", "rFisher", "$2b$10$2PJMyZ9ukBY0eTbrl5MPIO0UQi6hm6aN2Gd9.DlytwvH.FM2vOkbG"),
+("Bill", "Bob", "Financial Manager", "cfoTree", "bbill", "$2b$10$JrlKK83kfP9utraTtxd.Oud5aJ5JT/iahzf.3K.Dohv5Q8s0ws9Lu"),
+("Bubba", "Kumar", "Salesman", "bbill", "bubba_sales", "$2b$10$3.7Fhyfbaqvq/xc3eikX..04kgBbKipwq5mgDYcxGrgToAv8jOpwC"),
+("Tyler", "Blevins", "Janitor", "rFisher", "tyBlevins", "$2b$10$N0aPUunfyP6Ch/xww9nAGu.5McTBV/hq5enOcRN8q5iqkmz2LVsXS"),
+("Clare", "Crawley", "Hiring Manager", "rFisher", "clareC", "$2b$10$3/bx5W28aGBKbYNnyq1kDe7XdbaeoBIqt425AuOYtD/t9PYMBCnYO"),
+("Gordo", "Foodsey", "Chef", "rFisher", "gordofoodsey", "$2b$10$NdEVGVC8W7Zrvft/ZHK2Fe7UNWP8ZM5yHLK7xArOKevPpjY0S4p3."),
+("Peter", "Pilot", "Consulting Intern", "clareC", "pPilot", "$2b$10$0fUpr2v1HLhz1STvrxnoxekqLj97v/SLWBBr0rdoD1A0XLhwiO0hu"),
+("Tony", "Shark", "Data Analyst Co-op", "jDoe153", "tonySh", "$2b$10$WS7srln.hJ6Y5yG7gMLhVuIer.dOFK1wj2WSD77U9EFFD8gHV1AcO"),
+("Naruto", "Uzumaki", "Food Manager", "rFisher", "nUzu123", "$2b$10$f4xhw6lCSn4st.caCgF.0.ec4JzHBkJ/1Bt731H1k/x8AtFTWi.UW"),
+("Lucina", "Kumar", "Electrical Engineer", "bubba_sales", "lucinaK52", "$2b$10$rskqaq5rrkfK7hrQtF5VZ.vjIJBr1ZyMLCXloTEuCl8g/j1WMk4Pm"),
+("Giles", "Corey", "Stonemason", "clareC", "gCoreyToS", "$2b$10$fLBD2xyYsy8sfzmAGlBHwOb03uc6vbTgZxW4oNQtgwFNa32CM9dri"),
+("Abby", "Yu", "Quality Manager", "ceoDerbinsky", "yu.abigail", "$2b$10$tuySe1HncQOdgFA1iDD2geaoRM3BGLp0cohomT8RWxLlof/QrgWyK"),
+("James", "Pond", "Gardener", "rFisher", "jPond007", "$2b$10$P8nl.imtOGvhFGcopvBB8uz6j8Y46BEJiAhehSFFHqOpS09LA8Y8i");
 
 INSERT INTO Store (state, city, zip, manager) VALUES
 ("Oregon", "Portland", "17233", "ceoDerbinsky"),

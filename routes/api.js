@@ -56,8 +56,8 @@ router.post('/signup', function (req, res, next) {
                 bcrypt.genSalt(saltRounds, function (err, salt) { //generate salt and hash
                     bcrypt.hash(password, salt, function (err, hash) {
                         // Store hash into database
-                        connection.query('INSERT INTO Customer (firstName, lastName, userName, passKey, salt) VALUES ' +
-                            '(?, ?, ?, ?, ?);', [firstName, lastName, username, hash, salt], function (error, results, fields) {
+                        connection.query('INSERT INTO Customer (firstName, lastName, userName, passKey) VALUES ' +
+                            '(?, ?, ?, ?);', [firstName, lastName, username, hash], function (error, results, fields) {
                                 if (error) {
                                     res.json({
                                         status: 'failure',

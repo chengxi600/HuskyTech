@@ -653,7 +653,6 @@ function restock() {
         state: state,
         zip: zip
     }
-    console.log(data);
     fetch('http://localhost:3000/api/restock', {
         method: 'POST',
         headers: {

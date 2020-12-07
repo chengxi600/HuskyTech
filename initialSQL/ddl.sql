@@ -8,7 +8,6 @@ firstName varchar(20) NOT NULL,
 lastName varchar(20) NOT NULL,
 title varchar(20) NOT NULL,
 reportTo varchar(20),
-salt varchar(10) NOT NULL,
 FOREIGN KEY (reportTo) REFERENCES Employee(username)
 );
 
@@ -45,7 +44,6 @@ username varchar(20) NOT NULL,
 passkey varchar(70) NOT NULL,
 firstName varchar(20) NOT NULL,
 lastName varchar(20) NOT NULL,
-salt varchar(15) NOT NULL,
 PRIMARY key (username)
 );
 
