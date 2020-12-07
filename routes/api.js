@@ -406,6 +406,7 @@ router.post('/update-merchandise', function (req, res, next) {
     let oNum = body[1];
     let customerUsername = body[2];
 
+    console.log("Update merchandise" + body);
     connection.query('UPDATE Merchandise SET orderID = ? customerUsername = ? WHERE serial = ?',
         [oNum, customerUsername, serial], function (error, results, fields) {
             if (error) {

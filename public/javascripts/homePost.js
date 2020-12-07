@@ -335,10 +335,10 @@ function submitCart() {
         let zip = document.getElementById("zip").value;
         let status = "sent";
         getSerialNumbers().then(serials => {
-            console.log("2" + serials);
+            console.log("2 Serial Numbers :" + serials);
             //submit an order
             submitOrder(oNum, username).then(() => {
-                console.log("3");
+                console.log("3 Submit Order");
                 //submit an online order
                 fetch('http://localhost:3000/api/submit-online-order', {
                     method: 'POST',
@@ -350,13 +350,8 @@ function submitCart() {
                     return response.json();
                 }).then(data => {
                     if (data.status === "success") {
-                        //remove all cart items
-                        Object.keys(localStorage).forEach(function (key) {
-                            if (key.includes("cart")) {
-                                window.localStorage.removeItem(key);
-                            }
-                        })
                         //update inventory
+                        let successUpdate = false;
                         serials.forEach(function (serial) {
                             fetch('http://localhost:3000/api/update-merchandise', {
                                 method: 'POST',
@@ -368,11 +363,21 @@ function submitCart() {
                                 return response.json()
                             }).then(data => {
                                 if (data.status === "success") {
-                                    //success!
+                                    console.log("Updated an inventory");
+                                    successUpdate = true;
                                 } else {
+                                    successUpdate = false;
                                     alert(data.body);
                                 }
                             })
+                            //remove all cart items
+                            if (successUpdate) {
+                                Object.keys(localStorage).forEach(function (key) {
+                                    if (key.includes("cart")) {
+                                        window.localStorage.removeItem(key);
+                                    }
+                                })
+                            }
                         })
                     } else {
                         alert(data.body)
@@ -498,7 +503,7 @@ function getOrders() {
                 }
                 di3.appendChild(sele);
 
-                sele.onclick = () => { console.log("Hello");}
+                sele.onclick = () => { console.log("Hello"); }
             }
         } else {
             alert(data.body);
