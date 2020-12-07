@@ -382,6 +382,7 @@ router.post('/serial-number', function (req, res, next) {
     let shelfCity = body[2];
     let shelfState = body[3];
     let shelfZip = body[4];
+    console.log(body);
 
     //get an array of serial number from query
     connection.query('SELECT serial FROM Merchandise m WHERE m.brandType = ? AND m.modelType = ? AND m.shelfCity = ? ' +
