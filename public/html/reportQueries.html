@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>HuskyTech</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <noscript>Your browser does not support JavaScript!</noscript>
+
+    <!-- Bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!--Our CSS-->
+    <link rel="stylesheet" type="text/css" href="../stylesheets/stylePage.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/styleReport.css">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+</head>
+
+<body>
+
+    <header>
+        <!--Nav bar-->
+        <nav class="site-header sticky-top py-1">
+            <div class="container d-flex flex-column flex-md-row justify-content-between">
+                <a class="py-2" href="#" aria-label="Product">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                        stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mx-auto"
+                        role="img" viewBox="0 0 24 24" focusable="false">
+                        <title>Product</title>
+                        <circle cx="12" cy="12" r="10" />
+                        <path
+                            d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94" />
+                    </svg>
+                </a>
+            </div>
+        </nav>
+    </header>
+    
+    <section id="report-dashboard" class="container-fluid">
+        <div class="row">
+            <div class="leftmost col-4">
+                <div class="input-group col-12 bg-light">
+                    <h3 style="text-align: center;">Find customers eligible for discounts</h3>
+        
+                    <div id="discount-form" class="col-12" style="margin-top: 5%;">
+                        <label class="form-label" for="brandInput">Brand name
+                            <input type="text" id="brandInput" class="form-control" placeholder="brand">
+                        </label>
+                        <label class="form-label" for="amountInput">Amount spent required to be eligible for discount
+                            <input type="text" id="amountInput" class="form-control" placeholder="amount">
+                        </label>
+                        <button class="btn">Find Customers</button>
+                    </div>
+                </div>
+        
+                <div class="col-6" style="margin-top: 5%;">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Eligible Customers</span>
+                    </h4>
+        
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item d-flex justify-content-between lh-condensed col-12">
+                            Saahil Kumar
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed col-12">
+                            David Yan
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed col-12">
+                            Cheng Xi Tsou
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed col-12">
+                            Ningyu Chen
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed col-12">
+                            Vevey Zhan
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="middle col-4">
+                <div class="input-group col-12 bg-light">
+                    <h3 style="text-align: center;">Get sale information about brands</h3>
+        
+                    <div id="brand-form" class="col-12" style="margin-top: 5%;">
+                        <label class="form-label" for="brandInput">Brand name
+                            <input type="text" id="brandInput" class="form-control" placeholder="brand">
+                        </label>
+                        <button class="btn">Get Info</button>
+                    </div>
+                </div>
+
+                <div class="col-6" style="margin-top: 5%;">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Brand Information</span>
+                    </h4>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Model</th>
+                        <th scope="col">Number of Orders</th>
+                        <th scope="col">Avg Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <th scope="row">1</th>
+                        <td>IPhone X</td>
+                        <td>3</td>
+                        <td>8.6</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">2</th>
+                        <td>MacBook Pro</td>
+                        <td>5</td>
+                        <td>7.5</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">3</th>
+                        <td>IPhone 11</td>
+                        <td>2</td>
+                        <td>6.4</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="rightmost col-4">
+                <div class="input-group col-12 bg-light">
+                    <h3 style="text-align: center;">Get customer information about specific stores</h3>
+        
+                    <div id="store-form" class="col-12" style="margin-top: 5%;">
+                        <label class="form-label" for="cityInput">City Name
+                            <input type="text" id="cityInput" class="form-control" placeholder="city">
+                        </label>
+                        <label class="form-label" for="stateInput">State Name
+                            <input type="text" id="stateInput" class="form-control" placeholder="state">
+                        </label>
+                        <label class="form-label" for="cityInput">ZIP Code
+                            <input type="text" id="cityInput" class="form-control" placeholder="zip">
+                        </label>
+                        <button class="btn">Get Customer Info</button>
+                    </div>
+                </div>
+
+                <div class="col-6" style="margin-top: 5%;">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Customer Info</span>
+                    </h4>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Number of Orders</th>
+                        <th scope="col">Avg Rating Given</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <th scope="row">1</th>
+                        <td>Saahil</td>
+                        <td>Kumar</td>
+                        <td>3</td>
+                        <td>8.6</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">2</th>
+                        <td>David</td>
+                        <td>Yan</td>
+                        <td>5</td>
+                        <td>6.4</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">3</th>
+                        <td>Ningyu</td>
+                        <td>Chen</td>
+                        <td>2</td>
+                        <td>9.0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <hr class="rounded" style="margin: 2%; border-top: 3px dashed #bbb;">
+
+        <div class="on-load row">
+            <div class="col-6 left-half">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Stores That Have Met Their Sales Goal</span>
+                </h4>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">State</th>
+                        <th scope="col">City</th>
+                        <th scope="col">ZIP Code</th>
+                        <th scope="col">Proceeds</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <th scope="row">1</th>
+                        <td>Chicago</td>
+                        <td>Illinois</td>
+                        <td>12921</td>
+                        <td>$12,300</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">2</th>
+                        <td>Boston</td>
+                        <td>Massachusetts</td>
+                        <td>02115</td>
+                        <td>$11,070</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">3</th>
+                        <td>San Francisco</td>
+                        <td>California</td>
+                        <td>23183</td>
+                        <td>$10,910</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-6 right-half">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Sales Information For Each Manager</span>
+                </h4>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Manager Name</th>
+                        <th scope="col">Revenue Generated</th>
+                        <th scope="col">Number of Employees</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <th scope="row">1</th>
+                        <td>Nate Derbinsky</td>
+                        <td>$2,020</td>
+                        <td>4</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">2</th>
+                        <td>Abigail Yu</td>
+                        <td>$1,990</td>
+                        <td>3</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">3</th>
+                        <td>James Pond</td>
+                        <td>$1,500</td>
+                        <td>5</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        
+    </section>
+
+</body>
+</html>

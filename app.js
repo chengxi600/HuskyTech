@@ -30,19 +30,6 @@ app.use('/u-home', usersRouter);
 app.use('/e-home', employeeRouter);
 app.use('/api', apiRouter);
 
-// set a cookie
-app.use(function (req, res, next) {
-  // check if client sent cookie
-  const cookie = req.cookies.cookieName;
-  if (cookie === undefined) {
-    res.redirect('/login')
-  } else {
-    // yes, cookie was already present 
-    console.log('cookie exists', cookie);
-  } 
-  next(); // <-- important!
-});
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

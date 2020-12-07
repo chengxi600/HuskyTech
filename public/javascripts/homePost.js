@@ -200,7 +200,7 @@ function searchButton() {
                     cardText.textContent = "Price: $" + product.price;
 
                     let reviewLink = document.createElement("a");
-                    reviewLink.href = "#";
+                    reviewLink.href = "../html/review.html";
                     reviewLink.className = "card-link";
                     reviewLink.innerHTML = "Write a review!";
                     //"Add to Cart" has a unique value so we can retrieve product information
@@ -264,7 +264,6 @@ function searchButton() {
                         let stringData = window.sessionStorage.getItem("item" + e.target.value);
                         //remember product being reviewed
                         window.sessionStorage.setItem("reviewItem");
-
                     }
                     //increments count so next product has unique id
                     count++;
@@ -351,7 +350,7 @@ function submitCart() {
                 }).then(data => {
                     if (data.status === "success") {
                         //update inventory
-                        let successUpdate = false;
+                        let count = 0;
                         serials.forEach(function (serial) {
                             fetch('http://localhost:3000/api/update-merchandise', {
                                 method: 'POST',
@@ -364,20 +363,20 @@ function submitCart() {
                             }).then(data => {
                                 if (data.status === "success") {
                                     console.log("Updated an inventory");
-                                    successUpdate = true;
+                                    count++;
+                                    if (count === serials.length) {
+                                        Object.keys(window.localStorage).forEach(function (key) {
+                                            if (key.includes("cart")) {
+                                                window.localStorage.removeItem(key);
+                                            }
+                                        })
+                                        document.location.href = "http://localhost:3000/u-home"
+                                    }
                                 } else {
-                                    successUpdate = false;
                                     alert(data.body);
                                 }
                             })
                             //remove all cart items
-                            if (successUpdate) {
-                                Object.keys(localStorage).forEach(function (key) {
-                                    if (key.includes("cart")) {
-                                        window.localStorage.removeItem(key);
-                                    }
-                                })
-                            }
                         })
                     } else {
                         alert(data.body)
@@ -442,6 +441,7 @@ function getSerialNumbers() {
 function getOrders() {
     let customer = document.getElementById("usernameInput").value;
     let data = { username: customer };
+    console.log("clicked");
     fetch('http://localhost:3000/api/getOrders', {
         method: 'POST',
         headers: {
@@ -494,7 +494,8 @@ function getOrders() {
                 lablel.textContent = "Order Status";
                 let sele = document.createElement("select");
                 sele.id = orderNum;
-                let states = ["Sent", "Processes", "Delivered", "Lost"];
+                sele.className = customer;
+                let states = ["Sent", "Processed", "Delivered", "Lost"];
                 for (let i = 0; i < states.length; i++) {
                     let op = document.createElement("option");
                     op.value = states[i];
@@ -503,7 +504,8 @@ function getOrders() {
                 }
                 di3.appendChild(sele);
 
-                sele.onclick = () => { console.log("Hello"); }
+                // Call update state
+                sele.onchange = (event) => { updateOrderState(event);}
             }
         } else {
             alert(data.body);
@@ -511,23 +513,71 @@ function getOrders() {
     })
 }
 
-//TODO:
-function addMerchType() {
-    let customer = document.getElementById("usernameInput").value;
-    let data = { username: customer };
-    fetch('http://localhost:3000/api/getOrders', {
+function updateOrderState(event) {
+    let cusNum = event.target.className;
+    let orderNum = event.target.id;
+    let state = event.target.value;
+    fetch('http://localhost:3000/api/update-order-status', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
+        body: JSON.stringify([cusNum, orderNum, state])
+    }).then(response => {
+        return response.json();
+    }).then(data => {
+        if(data.status === "success") {
+            //Success!
+            alert("Successfully updated.");
+        } else{
+            alert(data.body);
+        }
+    }).catch(err => {
+        alert(err.message);
+    })
+}
+
+//TODO:
+function addMerchType() {
+    let brand = document.getElementById("brand-input").value;
+    let model = document.getElementById("model-input").value;
+    let price = document.getElementById("price-input").value;
+    let data = [brand, model, price];
+    console.log(data);
+    fetch('http://localhost:3000/api/addMerchType', {
+        method: 'POST',
+        headers: {
+            'Content-Type' : 'application/json'
+        },
         body: JSON.stringify(data)
     }).then(response => {
-        return response.json()
+        return response.json();
     }).then(data => {
         if (data.status === "success") {
-            console.log("hello " + data.body)
+            alert("Successfully added merchandise type.");
         } else {
-            alert(data.body)
+            alert(data.body);
         }
+    }).catch(err => {
+        alert(err.message);
+    })
+}
+
+function 
+
+function getRevenue() {
+    fetch('http://localhost:3000/api/addMerchType', {
+        method: 'GET',
+    }).then(response => {
+        return response.json();
+    }).then(data => {
+        if (data.status === "success") {
+            [{city: xx, state: xx, zip: xx, sum: xx}]
+            // data.body.forEach
+        } else {
+            alert(data.body);
+        }
+    }).catch(err => {
+        alert(err.message);
     })
 }

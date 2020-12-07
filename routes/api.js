@@ -407,8 +407,10 @@ router.post('/update-merchandise', function (req, res, next) {
     let oNum = body[1];
     let customerUsername = body[2];
 
-    console.log("Update merchandise" + body);
-    connection.query('UPDATE Merchandise SET orderID = ? customerUsername = ? WHERE serial = ?',
+    console.log("Update merchandise" + serial);
+    console.log("Update merchandise" + oNum);
+    console.log("Update merchandise" + customerUsername);
+    connection.query('UPDATE Merchandise SET orderID = ?, customerUsername = ? WHERE serial = ?',
         [oNum, customerUsername, serial], function (error, results, fields) {
             if (error) {
                 res.json({
@@ -471,17 +473,18 @@ router.post('/getOrders', function (req, res, next) {
         })
 });
 
-// INSERT INTO merchandiseType (brand, model, price) (?, ?, ?);
 
 router.post('/addMerchType', function (req, res, next) {
-    let brand = req.body.brand;
-    let model = req.body.model;
-    let price = req.body.price;
-    connection.query('INSERT INTO merchandiseType (brand, model, price) (?, ?, ?);',
+    let brand = req.body[0];
+    let model = req.body[1];
+    let price = req.body[2];
+    
+    connection.query('INSERT INTO merchandiseType (brand, model, price) VALUES (?, ?, ?);',
         [brand, model, price], function (error, results, fields) {
             if (error) {
                 res.json({
-                    status: "failure"
+                    status: "failure",
+                    body: "Invalid query"
                 })
             } else {
                 res.json({
@@ -491,7 +494,89 @@ router.post('/addMerchType', function (req, res, next) {
         });
 });
 
-// stores revenues
+router.post('/update-order-status', function(req, res, next) {
+    let customerUsername = req.body[0];
+    let orderNum = req.body[1];
+    let state = req.body[2];
+    connection.query('Update onlineorder Set state = ? WHERE orderNum = ? AND customerUsername = ? ;', 
+    [state, orderNum, customerUsername], function (error, results, fields) {
+        if(error) {
+            res.json({
+                status: "failure"
+            })
+        } else{
+            console.log(results);
+            res.json({
+                status: "success"
+            })
+        }
+    })
+})
+
+
+
+// ----------------------------Build this Query----------------------------
+// SELECT s.state, s.city, s.zip, SUM(mt.price)
+// FROM store s 
+// LEFT JOIN Merchandise m ON (s.state = m.shelfState AND s.city = m.shelfcity AND s.zip = m.shelfZip)
+// INNER JOIN MerchandiseType mt ON (m.brandType = mt.brand AND m.modelType = mt.model)
+// WHERE m.orderId IS NOT NULL and m.customerID IS NOT NULL
+// GROUP BY s.state, s.city, s.zip;
+
+
+
+router.get("/get-revenue", function (req, res, next) {
+    connection.query('SELECT s.city as city, s.state as state, s.zip as zip, SUM(mt.price) as totalRevenue FROM store s LEFT JOIN Merchandise m ON ' + 
+    '(s.state = m.shelfState AND s.city = m.shelfcity AND s.zip = m.shelfZip)' + 
+    'INNER JOIN MerchandiseType mt ON (m.brandType = mt.brand AND m.modelType = mt.model)' + 
+    'WHERE m.orderId IS NOT NULL and m.customerID IS NOT NULL' + 
+    'GROUP BY s.state, s.city, s.zip;', function(err, results, fields) {
+        if (err) {
+            res.json({
+                status: "failure",
+                body: "Invalid header"
+            })
+        } else {
+            console.log(results);
+            res.json({
+                status: "success",
+                body: results
+            })
+        }
+    })
+})
+
+
+// ----------------------------Build this Query----------------------------
+// INSERT INTO merchandise
+// VALUES
+// (Random Generated, Model, Brand, City, State, Zip, null, null);
+
+router.post('/restock', function(req, res, next) {
+    let body = req.body;
+    let serial = "#" +  Math.floor(Math.random() * (5)) + 1;
+    let model = body.model;
+    let brand = body.brand;
+    let city = body.city;
+    let state = body.state;
+    let zip = body.zip;
+
+    connection.query('INSERT INTO merchandise VALUES ' + 
+    '(serial, brandType, modelType, shelfState, shelfCity, shelfZIP, orderID, customerUsername) ' + 
+    'VALUES (?, ?, ?, ?, ?, ?, NULL, NULL );', [serial, brand, model, state, city, zip], function(error, results, next) {
+        if (error) {
+            res.json({
+                status: "failure",
+                body: "Invalid query."
+            })
+        } else {
+            res.json({
+                status: "success",
+                body: results
+            })
+        }
+    });
+})
 
 module.exports = router;
 

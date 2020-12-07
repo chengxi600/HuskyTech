@@ -1,0 +1,18 @@
+#report-dashboard {
+    margin-top: 2%;
+}
+
+#discount-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#brand-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#store-form {
+    display: flex;
+    flex-direction: column;
+}
