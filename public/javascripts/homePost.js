@@ -263,7 +263,7 @@ function searchButton() {
                         //get product being reviewed
                         let stringData = window.sessionStorage.getItem("item" + e.target.value);
                         //remember product being reviewed
-                        window.sessionStorage.setItem("reviewItem");
+                        window.sessionStorage.setItem("reviewItem", stringData);
                     }
                     //increments count so next product has unique id
                     count++;
@@ -563,17 +563,63 @@ function addMerchType() {
     })
 }
 
-function 
+function submitReview() {
+    let reviewProduct = JSON.parse(sessionStorage.getItem("reviewItem"));
+    let brandType = reviewProduct.brand;
+    let modelType = reviewProduct.model;
+    let customerUsername = localStorage.getItem("username");
+    let rating = 4; //get rating from stars
+    let descr = document.getElementById("review-textarea").value;
+
+    fetch('http://localhost:3000/api/submit-review', {
+        method: 'POST',
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify([brandType, modelType, customerUsername, rating, descr])
+        
+    }).then(response => {
+        return response.json();
+    }).then(data => {
+        if(data.status === "success") {
+            //submitted review
+            alert("Review Submitted!");
+        } else{
+            alert(data.body);
+        }
+    })
+}
 
 function getRevenue() {
-    fetch('http://localhost:3000/api/addMerchType', {
+    fetch('http://localhost:3000/api/get-revenue', {
         method: 'GET',
     }).then(response => {
         return response.json();
     }).then(data => {
         if (data.status === "success") {
-            [{city: xx, state: xx, zip: xx, sum: xx}]
-            // data.body.forEach
+            // [{city: xx, state: xx, zip: xx, totalReve: xx}, {city: xx, state: xx, zip: xx, totalRevenue: xx}]
+            data.body.forEach(rowObj => {
+                let city = rowObj.city;
+                let state = rowObj.state;
+                let zip = rowObj.zip;
+                let rev = rowObj.totalRevenue;
+                let data = [city, state, zip, rev];
+                let outContainer = document.getElementById("total-revenue");
+                
+                let inContainer = document.createElement("ul");
+                outContainer.appendChild(inContainer);
+                let inContainer1 = document.createElement("li");
+                inContainer1.className = "list-group-item d-flex justify-content-between lh-condensed";
+                inContainer.appendChild(inContainer1);
+                for (let i = 0; i < 4; i++) {
+                    let di = document.createElement("div");
+                    di.className = "col-3";
+                    inContainer1.appendChild(di);
+                    let sm = document.createElement("small");
+                    sm.textContent = data[i];
+                    di.appendChild(sm);
+                }
+            })
         } else {
             alert(data.body);
         }

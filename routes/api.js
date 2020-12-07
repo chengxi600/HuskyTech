@@ -272,6 +272,23 @@ router.post('/search-bar', function (req, res, next) {
     }
 })
 
+router.post('/submit-review', function (req, res, next) {
+    console.log(req.body[0] +  req.body[1] + req.body[2] + req.body[3] + req.body[4])
+    connection.query('INSERT INTO Review(brandType, modelType, customerUsername, rating, descr) VALUES (?, ?, ?, ?, ?);',
+        [req.body[0], req.body[1], req.body[2], req.body[3], req.body[4]], function (error, results, fields) {
+            if (error) {
+                res.json({
+                    status: "failure",
+                    body: "Something went wrong with the database."
+                })
+            } else {
+                res.json({
+                    status: "success",
+                    body: "Review went through"
+                })
+            }
+        })
+})
 
 //returns the get rated brand and model 
 router.get('/top-rated', function (req, res, next) {
@@ -362,7 +379,7 @@ router.post('/submit-order', function (req, res, next) {
     let oNum = body[0];
     let customerUsername = body[1];
     console.log("submit-order" + body);
-    connection.query('INSERT INTO Orders(orderNum, customerUsername) VALUES (?, ?);', [oNum, customerUsername], function(error, results, fields) {
+    connection.query('INSERT INTO Orders(orderNum, customerUsername) VALUES (?, ?);', [oNum, customerUsername], function (error, results, fields) {
         if (error) {
             res.json({
                 status: "failure"
@@ -478,7 +495,7 @@ router.post('/addMerchType', function (req, res, next) {
     let brand = req.body[0];
     let model = req.body[1];
     let price = req.body[2];
-    
+
     connection.query('INSERT INTO merchandiseType (brand, model, price) VALUES (?, ?, ?);',
         [brand, model, price], function (error, results, fields) {
             if (error) {
@@ -494,23 +511,23 @@ router.post('/addMerchType', function (req, res, next) {
         });
 });
 
-router.post('/update-order-status', function(req, res, next) {
+router.post('/update-order-status', function (req, res, next) {
     let customerUsername = req.body[0];
     let orderNum = req.body[1];
     let state = req.body[2];
-    connection.query('Update onlineorder Set state = ? WHERE orderNum = ? AND customerUsername = ? ;', 
-    [state, orderNum, customerUsername], function (error, results, fields) {
-        if(error) {
-            res.json({
-                status: "failure"
-            })
-        } else{
-            console.log(results);
-            res.json({
-                status: "success"
-            })
-        }
-    })
+    connection.query('Update onlineorder Set state = ? WHERE orderNum = ? AND customerUsername = ? ;',
+        [state, orderNum, customerUsername], function (error, results, fields) {
+            if (error) {
+                res.json({
+                    status: "failure"
+                })
+            } else {
+                console.log(results);
+                res.json({
+                    status: "success"
+                })
+            }
+        })
 })
 
 
@@ -526,24 +543,24 @@ router.post('/update-order-status', function(req, res, next) {
 
 
 router.get("/get-revenue", function (req, res, next) {
-    connection.query('SELECT s.city as city, s.state as state, s.zip as zip, SUM(mt.price) as totalRevenue FROM store s LEFT JOIN Merchandise m ON ' + 
-    '(s.state = m.shelfState AND s.city = m.shelfcity AND s.zip = m.shelfZip)' + 
-    'INNER JOIN MerchandiseType mt ON (m.brandType = mt.brand AND m.modelType = mt.model)' + 
-    'WHERE m.orderId IS NOT NULL and m.customerID IS NOT NULL' + 
-    'GROUP BY s.state, s.city, s.zip;', function(err, results, fields) {
-        if (err) {
-            res.json({
-                status: "failure",
-                body: "Invalid header"
-            })
-        } else {
-            console.log(results);
-            res.json({
-                status: "success",
-                body: results
-            })
-        }
-    })
+    connection.query('SELECT s.city as city, s.state as state, s.zip as zip, SUM(mt.price) as totalRevenue FROM store s LEFT JOIN Merchandise m ON ' +
+        '(s.state = m.shelfState AND s.city = m.shelfcity AND s.zip = m.shelfZip) ' +
+        'INNER JOIN MerchandiseType mt ON (m.brandType = mt.brand AND m.modelType = mt.model) ' +
+        'WHERE m.orderId IS NOT NULL and m.customerUsername IS NOT NULL ' +
+        'GROUP BY s.state, s.city, s.zip;', function (err, results, fields) {
+            if (err) {
+                res.json({
+                    status: "failure",
+                    body: "Invalid query."
+                })
+            } else {
+                console.log(results);
+                res.json({
+                    status: "success",
+                    body: results
+                })
+            }
+        })
 })
 
 
@@ -552,30 +569,30 @@ router.get("/get-revenue", function (req, res, next) {
 // VALUES
 // (Random Generated, Model, Brand, City, State, Zip, null, null);
 
-router.post('/restock', function(req, res, next) {
+router.post('/restock', function (req, res, next) {
     let body = req.body;
-    let serial = "#" +  Math.floor(Math.random() * (5)) + 1;
+    let serial = "#" + Math.floor(Math.random() * (5)) + 1;
     let model = body.model;
     let brand = body.brand;
     let city = body.city;
     let state = body.state;
     let zip = body.zip;
 
-    connection.query('INSERT INTO merchandise VALUES ' + 
-    '(serial, brandType, modelType, shelfState, shelfCity, shelfZIP, orderID, customerUsername) ' + 
-    'VALUES (?, ?, ?, ?, ?, ?, NULL, NULL );', [serial, brand, model, state, city, zip], function(error, results, next) {
-        if (error) {
-            res.json({
-                status: "failure",
-                body: "Invalid query."
-            })
-        } else {
-            res.json({
-                status: "success",
-                body: results
-            })
-        }
-    });
+    connection.query('INSERT INTO merchandise VALUES ' +
+        '(serial, brandType, modelType, shelfState, shelfCity, shelfZIP, orderID, customerUsername) ' +
+        'VALUES (?, ?, ?, ?, ?, ?, NULL, NULL );', [serial, brand, model, state, city, zip], function (error, results, next) {
+            if (error) {
+                res.json({
+                    status: "failure",
+                    body: "Invalid query."
+                })
+            } else {
+                res.json({
+                    status: "success",
+                    body: results
+                })
+            }
+        });
 })
 
 module.exports = router;

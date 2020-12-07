@@ -56,7 +56,7 @@ function loadReviewPage() {
     let modelName = document.getElementById('review-model');
     let priceName = document.getElementById('review-price');
 
-    let reviewProduct = JSON.parse(localStorage.getItem("reviewItem"));
+    let reviewProduct = JSON.parse(sessionStorage.getItem("reviewItem"));
 
     brandName.innerHTML = reviewProduct.brand;
     modelName.innerHTML = reviewProduct.model;
