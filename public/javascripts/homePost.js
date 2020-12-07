@@ -691,14 +691,12 @@ function restock() {
 //function loads the review page
 function loadReviewPage() {
     let brandName = document.getElementById('review-brand');
-    let modelName = document.getElementById('review-model');
     let priceName = document.getElementById('review-price');
 
     let reviewProduct = JSON.parse(sessionStorage.getItem("reviewItem"));
 
-    brandName.innerHTML = reviewProduct.brand;
-    modelName.innerHTML = reviewProduct.model;
-    priceName.innerHTML = "$" + reviewProduct.price;
+    brandName.innerHTML = reviewProduct.brand + " " + reviewProduct.model;
+    priceName.innerHTML = "Price: $" + reviewProduct.price;
 
     getReviews(2).then((reviews) => {
         for (let i = 0; i < reviews.length; i++) {

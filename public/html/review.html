@@ -45,18 +45,17 @@
         <div class="row">
             <div class="col">
                 <div class="card h-100">
-                    <h3 id="review-brand"> Brand DOM Change </h3>
+                    <h3 id="review-brand" style="padding: 2%;"> Brand DOM Change </h3>
                     <img src="../images/laptop.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <h5 id="review-model" class="card-title">Model goes here</h5>
-                        <p id="review-price" class="card-text">Price: goes here.</p>
+                        <strong id="review-price" class="card-text">Price: goes here.</strong>
                     </div>
                 </div>
             </div>
 
             <div id="review-box" class="col">
-                <h2 class="title-middle"> Review Your Purchase </h2>
-                <label> Star Rating:
+                <h2 class="title-middle padding"> Review Your Purchase </h2>
+                <label class="padding"> Star Rating:
                     <div id="review-stars" class="rating"> 
                         <span onclick = "checkStar()" class = "fa fa-star" id = "10"> </span>
                         <span onclick = "checkStar()" class = "fa fa-star" id = "9"> </span>
@@ -89,7 +88,7 @@
                         <label for="1">☆</label>
                         <input type="radio" name="rating" value="1" checked="checked" id="1" disabled> -->
                     </div>
-                    <div class="form-group">
+                    <div class="form-group padding">
                         <label for="review-textarea">Add a written review:</label>
                         <textarea class="form-control" id="review-textarea" rows="20" cols="60" maxLength = "255"
                             placeholder="What did you like or dislike? What did you use this product for?"></textarea>
