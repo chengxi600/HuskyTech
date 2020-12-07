@@ -571,25 +571,24 @@ router.get("/get-revenue", function (req, res, next) {
 
 router.post('/restock', function (req, res, next) {
     let body = req.body;
-    let serial = "#" + Math.floor(Math.random() * (5)) + 1;
+    let serial = "#" + Math.floor(Math.random() * (10 ** 5));
+    console.log(serial);
     let model = body.model;
     let brand = body.brand;
     let city = body.city;
     let state = body.state;
     let zip = body.zip;
-
-    connection.query('INSERT INTO merchandise VALUES ' +
+    console.log(model);
+    connection.query('INSERT INTO merchandise ' +
         '(serial, brandType, modelType, shelfState, shelfCity, shelfZIP, orderID, customerUsername) ' +
         'VALUES (?, ?, ?, ?, ?, ?, NULL, NULL );', [serial, brand, model, state, city, zip], function (error, results, next) {
             if (error) {
                 res.json({
-                    status: "failure",
-                    body: "Invalid query."
+                    body: "Invalid query. Please try again."
                 })
             } else {
                 res.json({
-                    status: "success",
-                    body: results
+                    body: "Successfully updated merchandise stock."
                 })
             }
         });

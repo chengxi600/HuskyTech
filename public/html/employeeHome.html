@@ -99,37 +99,17 @@
                         <div class="col-6">
                             <div id="addMerch">
                                 <h4> Restock Merchandise </h4>
-                                <label for="MerchandiseModel">Choose a Model:</label>
-                                <select name="MerchandiseModel" class="select-box" id="MerchandiseModel">
-                                    <option value="1"> DOM</option>
-                                    <option value="2"> DOM</option>
-                                    <option value="2"> DOM</option>
-                                </select>
-                                <label for="MerchandiseBrand">Choose a Brand:</label>
-                                <select name="MerchandiseBrand" class="select-box" id="MerchandiseBrand">
-                                    <option value="1"> DOM</option>
-                                    <option value="2"> DOM</option>
-                                    <option value="2"> DOM</option>
-                                </select>
-                                <label for="shelfCity">Choose a shelfCity:</label>
-                                <select name="shelfCity" class="select-box" id="shelfCity">
-                                    <option value="1"> DOM</option>
-                                    <option value="2"> DOM</option>
-                                    <option value="2"> DOM</option>
-                                </select>
-                                <label for="shelfState">Choose a shelfState:</label>
-                                <select name="shelfState" class="select-box" id="shelfState">
-                                    <option value="1"> DOM</option>
-                                    <option value="2"> DOM</option>
-                                    <option value="2"> DOM</option>
-                                </select>
-                                <label for="shelfZip">Choose a shelfZip:</label>
-                                <select name="shelfZip" class="select-box" id="shelfZip">
-                                    <option value="1"> DOM</option>
-                                    <option value="2"> DOM</option>
-                                    <option value="2"> DOM</option>
-                                </select>
-                                <button class="btn">Add</button>
+                                <label for="MerchandiseModel">Model:</label>
+                                <input type="text" id="model-restock" placeholder="Input a Model">
+                                <label for="MerchandiseBrand">Brand:</label>
+                                <input type="text" id="brand-restock" placeholder="Input a Brand">
+                                <label for="shelfCity">shelfCity:</label>
+                                <input type="text" id="city-restock" placeholder="Input a shelfCity">
+                                <label for="shelfState">shelfState:</label>
+                                <input type="text" id="state-restock" placeholder="Input a shelfState">
+                                <label for="shelfZip">shelfZip:</label>
+                                <input type="text" id="zip-restock" placeholder="Input a shelfZip">
+                                <button class="btn" onclick = "restock()">Add</button>
                             </div>
                         </div class="col-6">
                         <div class="col-6">

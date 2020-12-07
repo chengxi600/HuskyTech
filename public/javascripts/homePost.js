@@ -568,7 +568,18 @@ function submitReview() {
     let brandType = reviewProduct.brand;
     let modelType = reviewProduct.model;
     let customerUsername = localStorage.getItem("username");
-    let rating = 4; //get rating from stars
+    
+    let parentRating = document.getElementById("review-stars");
+    let rating = 0;
+
+    parentRating.children.forEach(starChild => {
+        if(starChild.type === "input") {
+            if(starChild.checked) {
+                rating++;
+            }
+        }
+    });
+
     let descr = document.getElementById("review-textarea").value;
 
     fetch('http://localhost:3000/api/submit-review', {
@@ -625,5 +636,34 @@ function getRevenue() {
         }
     }).catch(err => {
         alert(err.message);
+    })
+}
+
+function restock() {
+    let model = document.getElementById("model-restock").value;
+    let brand = document.getElementById("brand-restock").value;
+    let city = document.getElementById("city-restock").value;
+    let state = document.getElementById("state-restock").value;
+    let zip = document.getElementById("zip-restock").value;
+    
+    let data = {
+        model: model,
+        brand: brand,
+        city: city,
+        state: state,
+        zip: zip
+    }
+    console.log(data);
+    fetch('http://localhost:3000/api/restock', {
+        method: 'POST',
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify(data)
+        
+    }).then(response => {
+        return response.json();
+    }).then(data => {
+        alert(data.body);
     })
 }
