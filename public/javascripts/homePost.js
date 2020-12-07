@@ -105,7 +105,6 @@ function getTopRatedModel() {
                 }
                 topRating.appendChild(star);
             }
-
         } else {
             alert(data.body);
         }
@@ -324,6 +323,28 @@ function submitOrder(oNum, username) {
     return promise;
 }
 
+function getReviews(numberOfReviews) {
+    let promise = new Promise((resolve, reject) => {
+        fetch('http://localhost:3000/api/get-reviews', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            if (data.status === "failure") {
+                alert(data.body)
+            } else {
+                resolve(data.body.slice(0, numberOfReviews));
+            }
+        }).catch(err => {
+            alert("Somethign went wrong with get request");
+        })
+    })
+    return promise;
+}
+
 function submitCart() {
     getOrderNumber().then((oNum) => {
         console.log("1 Order Number : " + oNum);
@@ -398,7 +419,6 @@ function getSerialNumbers() {
         let shelfCities = [];
         let shelfStates = [];
         let shelfZIPs = [];
-
 
         Object.keys(window.localStorage).forEach(function (key) {
             if (key.includes("cart")) {
@@ -505,7 +525,7 @@ function getOrders() {
                 di3.appendChild(sele);
 
                 // Call update state
-                sele.onchange = (event) => { updateOrderState(event);}
+                sele.onchange = (event) => { updateOrderState(event); }
             }
         } else {
             alert(data.body);
@@ -526,10 +546,10 @@ function updateOrderState(event) {
     }).then(response => {
         return response.json();
     }).then(data => {
-        if(data.status === "success") {
+        if (data.status === "success") {
             //Success!
             alert("Successfully updated.");
-        } else{
+        } else {
             alert(data.body);
         }
     }).catch(err => {
@@ -547,7 +567,7 @@ function addMerchType() {
     fetch('http://localhost:3000/api/addMerchType', {
         method: 'POST',
         headers: {
-            'Content-Type' : 'application/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
     }).then(response => {
@@ -568,13 +588,13 @@ function submitReview() {
     let brandType = reviewProduct.brand;
     let modelType = reviewProduct.model;
     let customerUsername = localStorage.getItem("username");
-    
+
     let parentRating = document.getElementById("review-stars");
     let rating = 0;
 
     parentRating.children.forEach(starChild => {
-        if(starChild.type === "input") {
-            if(starChild.checked) {
+        if (starChild.type === "input") {
+            if (starChild.checked) {
                 rating++;
             }
         }
@@ -585,17 +605,17 @@ function submitReview() {
     fetch('http://localhost:3000/api/submit-review', {
         method: 'POST',
         headers: {
-            'Content-Type' : 'application/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify([brandType, modelType, customerUsername, rating, descr])
-        
+
     }).then(response => {
         return response.json();
     }).then(data => {
-        if(data.status === "success") {
+        if (data.status === "success") {
             //submitted review
             alert("Review Submitted!");
-        } else{
+        } else {
             alert(data.body);
         }
     })
@@ -616,7 +636,7 @@ function getRevenue() {
                 let rev = rowObj.totalRevenue;
                 let data = [city, state, zip, rev];
                 let outContainer = document.getElementById("total-revenue");
-                
+
                 let inContainer = document.createElement("ul");
                 outContainer.appendChild(inContainer);
                 let inContainer1 = document.createElement("li");
@@ -645,7 +665,7 @@ function restock() {
     let city = document.getElementById("city-restock").value;
     let state = document.getElementById("state-restock").value;
     let zip = document.getElementById("zip-restock").value;
-    
+
     let data = {
         model: model,
         brand: brand,
@@ -656,13 +676,89 @@ function restock() {
     fetch('http://localhost:3000/api/restock', {
         method: 'POST',
         headers: {
-            'Content-Type' : 'application/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-        
+
     }).then(response => {
         return response.json();
     }).then(data => {
         alert(data.body);
     })
+}
+
+
+//function loads the review page
+function loadReviewPage() {
+    let brandName = document.getElementById('review-brand');
+    let modelName = document.getElementById('review-model');
+    let priceName = document.getElementById('review-price');
+
+    let reviewProduct = JSON.parse(sessionStorage.getItem("reviewItem"));
+
+    brandName.innerHTML = reviewProduct.brand;
+    modelName.innerHTML = reviewProduct.model;
+    priceName.innerHTML = "$" + reviewProduct.price;
+
+    getReviews(2).then((reviews) => {
+        for (let i = 0; i < reviews.length; i++) {
+            let review = reviews[i];
+            let rating = review.rating;
+
+            document.getElementById("product-review-label-" + (i + 1)).innerHTML = review.brandType + " " + review.modelType;
+
+            let parentStar = document.getElementById("single-review-" + (i + 1));
+            //making checked rating stars
+            for (let i = 0; i < rating; i++) {
+                let star = document.createElement("span");
+                star.className = "fa fa-star checked";
+                parentStar.appendChild(star);
+            }
+            //making unchecked rating stars
+            for (let i = 0; i < 10 - rating; i++) {
+                let star = document.createElement("span");
+                star.className = "fa fa-star";
+                parentStar.appendChild(star);
+            }
+
+
+            let label = document.createElement("label");
+            label.for = "rating";
+            label.className = "block";
+            label.innerHTML = "Review";
+            let para = document.createElement("p");
+            para.id = "review-review-" + i;
+            para.innerHTML = "\"" + review.descr + "\"" + " By " + review.customerUsername;
+            para.style = "margin-bottom: 15%;";
+
+            parentStar.appendChild(label);
+            parentStar.appendChild(para);
+        }
+    })
+}
+
+//function loads the review home
+function getReviewsHome() {
+    getReviews(4).then((reviews) => {
+        let reviewProducts = document.getElementsByClassName("home-review-product");
+        for (let i = 0; i < reviews.length; i++) {
+            document.getElementById("home-review-" + (i + 1)).innerHTML = formatReviewHome(reviews[i]);
+            document.getElementById("home-review-product-" + (i + 1)).innerHTML = reviews[i].brandType + " " + reviews[i].modelType;
+            //creating rating stars favicon
+            for (let j = 0; j < 10; j++) {
+                let star = document.createElement("span");
+                if (j < reviews[i].rating) {
+                    star.className = "fa fa-star checked";
+
+                } else {
+                    star.className = "fa fa-star";
+                }
+                reviewProducts[i].appendChild(star);
+            }
+        }
+    })
+}
+
+function formatReviewHome(reviewData) {
+    return "\"" + reviewData.descr + "\" - " + reviewData.customerUsername;
 }
