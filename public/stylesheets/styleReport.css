@@ -16,3 +16,8 @@
     display: flex;
     flex-direction: column;
 }
+
+.padding {
+    padding-top: 5%;
+    padding-bottom: 5%;
+}

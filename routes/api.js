@@ -162,14 +162,15 @@ router.post('/login', function (req, res, next) {
     });
 });
 
-router.get('/get-reviews', function(req, res, next) {
-    connection.query('SELECT * FROM Review ORDER BY Review.rating DESC', [], function(error, results, fields) {
-        if(error) {
+router.get('/get-reviews', function (req, res, next) {
+    connection.query('SELECT * FROM Review ORDER BY Review.rating DESC', [], function (error, results, fields) {
+        if (error) {
             res.json({
                 status: "failure",
                 body: "Something went wrong with backend"
             })
-        } else{
+        } else {
+            console.log(results);
             res.json({
                 status: "success",
                 body: results
@@ -289,7 +290,7 @@ router.post('/search-bar', function (req, res, next) {
 })
 
 router.post('/submit-review', function (req, res, next) {
-    console.log(req.body[0] +  req.body[1] + req.body[2] + req.body[3] + req.body[4])
+    console.log(req.body[0] + req.body[1] + req.body[2] + req.body[3] + req.body[4])
     connection.query('INSERT INTO Review(brandType, modelType, customerUsername, rating, descr) VALUES (?, ?, ?, ?, ?);',
         [req.body[0], req.body[1], req.body[2], req.body[3], req.body[4]], function (error, results, fields) {
             if (error) {
@@ -608,6 +609,143 @@ router.post('/restock', function (req, res, next) {
                 })
             }
         });
+})
+
+router.post('/discount', function (req, res, next) {
+    let body = req.body;
+    let brand = body[0];
+    let threshold = body[1];
+
+    let sqlString = 'SELECT Customer.firstName AS firstName, customer.lastName AS lastName FROM Customer INNER JOIN( ' +
+        'SELECT customer.username as username, SUM(merchandisetype.price) as totalSpent FROM ' +
+        'Customer INNER JOIN Orders ON Orders.customerUsername = customer.username ' +
+        'INNER JOIN Merchandise ON (Merchandise.customerUsername = orders.customerUsername AND merchandise.orderID = orders.orderNum) ' +
+        'INNER JOIN MerchandiseType ON( Merchandise.brandtype = merchandiseType.brand AND merchandise.modelType = merchandiseType.model) ' +
+        'WHERE MerchandiseType.brand = ? GROUP BY customer.username) AS t1 ON t1.username = Customer.Username ' +
+        'WHERE t1.totalSpent > ? ORDER BY lastName, Customer.username;'
+    connection.query(sqlString, [brand, threshold], function (error, results, fields) {
+        if (error) {
+            res.json({
+                status: "failure",
+                body: "Invalid query."
+            })
+        } else {
+            res.json({
+                status: "success",
+                body: results
+            })
+        }
+    })
+})
+
+router.get('/get-quota-stores', function (req, res, next) {
+    let sqlString = '' +
+        'SELECT Store.State, Store.City, Store.Zip, SUM(MerchandiseType.price) AS Proceeds ' +
+        'FROM Store INNER JOIN Merchandise ON(' +
+        'Merchandise.shelfCity = Store.City AND Merchandise.shelfState = Store.State AND Merchandise.shelfZip = Store.Zip) ' +
+        'INNER JOIN MerchandiseType ON(Merchandise.brandType = MerchandiseType.brand AND Merchandise.modelType = MerchandiseType.model) ' +
+        'INNER JOIN Orders ON( Merchandise.orderId = Orders.orderNum AND Merchandise.customerUsername = Orders.customerUsername) ' +
+        'WHERE ' +
+        'Orders.customerUsername NOT IN( SELECT customerUsername FROM onlineorder WHERE state = "lost" ) AND Orders.orderNum NOT IN(' +
+        'SELECT orderNum FROM OnlineOrder WHERE state = "lost" ) ' +
+        'GROUP BY Store.State, Store.City, Store.Zip ' +
+        'HAVING Proceeds > 2000 ' +
+        'ORDER BY Proceeds DESC , Store.State ASC, Store.City ASC;'
+    connection.query(sqlString, function (error, results, fields) {
+        if (error) {
+            res.json({
+                status: "failure",
+                body: "Something went wrong with the server's database."
+            })
+        } else {
+            res.json({
+                status: "success",
+                body: results
+            })
+        }
+    })
+})
+
+
+router.get('/sales-and-employees', function (req, res, next) {
+    let sqlString = 'SELECT q.manager, p.revenue , q.employees FROM  (SELECT e.reportTo as manager, COUNT(e.username) as employees ' +
+        'FROM Employee e GROUP BY manager) q INNER JOIN (SELECT s.manager, SUM(mt.price) as revenue FROM store s ' +
+        'INNER JOIN Merchandise m ON (s.state = m.shelfState AND s.city = m.shelfcity AND s.zip = m.shelfZip) ' +
+        'INNER JOIN MerchandiseType mt ON (m.brandType = mt.brand AND m.modelType = mt.model) ' +
+        'WHERE m.orderId IS NOT NULL AND m.customerUsername IS NOT NULL GROUP BY s.manager) p ON q.manager = p.manager ' +
+        'ORDER BY p.revenue, q.employees;'
+    connection.query(sqlString, function (error, results, fields) {
+        if (error) {
+            res.json({
+                status: "failure",
+                body: "Something went wrong with the server's database."
+            })
+        } else {
+            res.json({
+                status: "success",
+                body: results
+            })
+        }
+    })
+})
+
+
+router.post('/most-popular-ratings', function (req, res, next) {
+    let body = req.body;
+    let brand = body[0];
+    let threshold = body[1];
+
+    let sqlString = '' +
+        'SELECT MerchandiseType.model AS model, COUNT(Orders.orderNum) AS num_orders, Format(AVG(Review.rating), 1) AS avg_rating ' +
+        'FROM Merchandise INNER JOIN Orders ON (Merchandise.orderId = Orders.orderNum AND Merchandise.customerUsername = Orders.customerUsername) ' +
+        'INNER JOIN MerchandiseType ON (Merchandise.brandType = MerchandiseType.brand AND Merchandise.modelType = MerchandiseType.model) ' +
+        'INNER JOIN Review ON (MerchandiseType.brand = Review.brandType AND MerchandiseType.model = Review.modelType) ' +
+        'WHERE brand = ? GROUP BY MerchandiseType.brand, MerchandiseType.model HAVING AVG(Review.rating) >= ? ' +
+        'ORDER BY AVG(Review.rating) DESC, num_orders DESC;'
+
+    connection.query(sqlString, [brand, threshold], function (error, results, fields) {
+        if (error) {
+            res.json({
+                status: "failure",
+                body: "Invalid query."
+            })
+        } else {
+            console.log(results);
+            res.json({
+                status: "success",
+                body: results
+            })
+        }
+    })
+})
+
+router.post('/top-selling-stores', function (req, res, next) {
+    let body = req.body;
+    let city = body[0];
+    let state = body[1];
+    let zip = body[2];
+
+    sqlString = '' + 
+    'SELECT Customer.firstName AS firstName, Customer.lastName AS lastName,COUNT(*) AS orderCount, Format(AVG(Review.rating), 1)  as avgRating ' +
+    'FROM Customer INNER JOIN Orders ON Customer.username = orders.customerUsername INNER JOIN merchandise ON merchandise.orderID = orders.orderNum ' +
+    'AND merchandise.customerUsername = orders.customerUsername INNER JOIN Store ON store.city = merchandise.shelfCity AND store.state = merchandise.shelfState AND ' +
+    'store.zip = merchandise.shelfZIP LEFT OUTER JOIN review ON customer.username = review.customerUsername AND review.brandType = merchandise.brandType ' +
+    'AND merchandise.modelType = review.modelType WHERE store.city = ? AND store.state = ? AND store.zip = ?;'
+
+    connection.query(sqlString, [city, state, zip], function (error, results, fields) {
+        if (error) {
+            res.json({
+                status: "failure",
+                body: "Invalid query."
+            })
+        } else {
+            console.log(results);
+            res.json({
+                status: "success",
+                body: results
+            })
+        }
+    })
 })
 
 module.exports = router;

@@ -588,18 +588,7 @@ function submitReview() {
     let brandType = reviewProduct.brand;
     let modelType = reviewProduct.model;
     let customerUsername = localStorage.getItem("username");
-
-    let parentRating = document.getElementById("review-stars");
-    let rating = 0;
-
-    parentRating.children.forEach(starChild => {
-        if (starChild.type === "input") {
-            if (starChild.checked) {
-                rating++;
-            }
-        }
-    });
-
+    let rating = document.getElementById("review-slider").value;
     let descr = document.getElementById("review-textarea").value;
 
     fetch('http://localhost:3000/api/submit-review', {
@@ -759,4 +748,109 @@ function getReviewsHome() {
 
 function formatReviewHome(reviewData) {
     return "\"" + reviewData.descr + "\" - " + reviewData.customerUsername;
+}
+
+//Loads get request query results.
+//Params: 
+//api: api address of get request
+//parentId: id of table body for query result html
+function loadGetTables(api, parentId) {
+    fetch(api, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        if (data.status === "failure") {
+            alert(data.body);
+        } else {
+            console.log(data.body);
+            let parent = document.getElementById(parentId);
+            let count = 1;
+            data.body.forEach(function (row) {
+                let tableRow = document.createElement("tr");
+                let num = document.createElement("th");
+                num.scope = "row";
+                num.innerHTML = count;
+                tableRow.appendChild(num);
+                for (const key in row) {
+                    let cell = document.createElement("td");
+                    cell.innerHTML = (key === "Proceeds") ? "$" + row[key] : row[key];
+                    tableRow.appendChild(cell);
+                }
+                parent.appendChild(tableRow);
+                count++;
+            });
+        }
+    }).catch((err) => {
+        alert("Something went wrong with the request")
+    })
+}
+
+//Loads post request query results.
+//Params: 
+//api: api address of get request
+//params: array of parameters for post request
+//parentId: id of table body for query result html
+function loadPostTables(api, params, parentId) {
+    fetch(api, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        if (data.status === "failure") {
+            alert(data.body);
+        } else {
+            document.getElementById(parentId).innerHTML = "";
+            let parent = document.getElementById(parentId);
+            let count = 1;
+            data.body.forEach(function (row) {
+                let tableRow = document.createElement("tr");
+                let num = document.createElement("th");
+                num.scope = "row";
+                num.innerHTML = count;
+                tableRow.appendChild(num);
+                for (const key in row) {
+                    let cell = document.createElement("td");
+                    cell.innerHTML = (key === "Proceeds") ? "$" + row[key] : row[key];
+                    tableRow.appendChild(cell);
+                }
+                parent.appendChild(tableRow);
+                count++;
+            });
+        }
+    }).catch((err) => {
+        alert("Something went wrong with the request")
+    })
+}
+
+function loadEmployeePageTables() {
+    loadGetTables('http://localhost:3000/api/get-quota-stores', 'quota-table-body');
+    loadGetTables('http://localhost:3000/api/sales-and-employees', 'manager-table-body');
+
+    // Discount
+    document.getElementById("discount-button").addEventListener("click", () => {
+        
+        loadPostTables('http://localhost:3000/api/discount', [
+            document.getElementById("discountBrandInput").value, document.getElementById("amountInput").value], "discount-customers-table");
+    });
+
+    // Threshold 
+    document.getElementById("thresh-hold").addEventListener("click", () => {
+        loadPostTables('http://localhost:3000/api/most-popular-ratings', [
+            document.getElementById("brandInput").value, document.getElementById("thresholdInput").value], "brand-satisfaction-table");
+    });
+
+    //Store information
+    document.getElementById("specific-stores").addEventListener("click", () => {
+        loadPostTables('http://localhost:3000/api/top-selling-stores', [document.getElementById("cityInput").value,
+            document.getElementById("stateInput").value, document.getElementById("zipInput").value], "store-info-table");
+            
+    });
 }

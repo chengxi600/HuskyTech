@@ -1,5 +1,6 @@
 //This page should contain all helper onclick functions
 
+
 //Cart button animation
 let buttons = document.querySelectorAll(".cart-button");
     for (var i = 0; i < buttons.length; i++) {
@@ -130,16 +131,3 @@ function clearItems() {
 }
 
 
-function checkStar(e) {
-    let star = e.target;
-    let id = star.id;
-    for (let i = 1; i <= 10; i++) {
-        let s = document.getElementById(id);
-        if (i <= id) {
-            s.classList.add("checked");
-        }
-        else {
-            s.className = "fa fa-star";
-        }
-    }
-}

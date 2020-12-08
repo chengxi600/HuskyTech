@@ -1,3 +1,4 @@
+--DESIGNED FOR THE RDBMS: MariaDB (MYSQL FLAVOR)
 CREATE DATABASE huskytech;
 USE huskytech;
 CREATE TABLE Employee (

@@ -26,6 +26,8 @@
 
 .product-banner {
     background-image: url(../images/productbanner.png);
+    background-repeat: no-repeat;
+    background-size:100% 100%;
 }
 
 .product-btn {
