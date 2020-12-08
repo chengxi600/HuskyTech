@@ -1,5 +1,4 @@
-//This page should contain all helper onclick functions
-
+//This page should contain all helper functions that don't use fetch api
 
 //Cart button animation
 let buttons = document.querySelectorAll(".cart-button");
@@ -104,6 +103,7 @@ function toCart() {
     items.appendChild(price);   
 }
 
+//finds number of items in the cart
 function numberOfItemsInCart() {
     let count = 0;
     Object.keys(localStorage).forEach(function(key) {
@@ -114,6 +114,7 @@ function numberOfItemsInCart() {
     return count;
 }
 
+//clears the cart
 function clearCart() {
     Object.keys(localStorage).forEach(function(key) {
         if(key.includes("cart")) {
@@ -122,6 +123,7 @@ function clearCart() {
     })
 }
 
+//clears items temporarily stored in session storage
 function clearItems() {
     Object.keys(sessionStorage).forEach(function(key) {
         if(key.includes("item")) {
