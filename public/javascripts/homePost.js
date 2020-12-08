@@ -348,7 +348,7 @@ function getReviews(numberOfReviews) {
 function submitCart() {
     getOrderNumber().then((oNum) => {
         console.log("1 Order Number : " + oNum);
-        let username = document.getElementById("username").value;
+        let username = document.getElementById("cart-username").value;
         let address = document.getElementById("address").value;
         let city = document.getElementById("city").value;
         let state = document.getElementById("state").value;
