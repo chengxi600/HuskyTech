@@ -35,3 +35,27 @@
 .checked {
     color: orange;
 }
+
+.carousel-item:before {
+    -webkit-box-shadow: inset 0 0 20rem rgba(0, 0, 0, 1);
+    box-shadow: inset 0 0 20rem rgba(0, 0, 0, 1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    content: "";
+}
+
+.home-review-product {
+    position: absolute;
+    top: 20%;
+    right: 20%;
+    font-weight: bold;
+}
+
+.home-review-stars {
+    position: absolute;
+    top: 20%;
+    right: 20%;
+}

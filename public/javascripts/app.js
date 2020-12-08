@@ -11,8 +11,6 @@ let buttons = document.querySelectorAll(".cart-button");
     }
 }
 
-
-
 let signupLink = document.getElementById("signup");
 let loginLink = document.getElementById("login");
 let login = document.getElementById("login-form");
@@ -50,19 +48,6 @@ function clearForm(form) {
     }
 }
 
-//function redirects 
-function loadReviewPage() {
-    let brandName = document.getElementById('review-brand');
-    let modelName = document.getElementById('review-model');
-    let priceName = document.getElementById('review-price');
-
-    let reviewProduct = JSON.parse(sessionStorage.getItem("reviewItem"));
-
-    brandName.innerHTML = reviewProduct.brand;
-    modelName.innerHTML = reviewProduct.model;
-    priceName.innerHTML = "$" + reviewProduct.price;
-}
-
 //loads the cart information to DOM in cart page
 function toCart() {
     //clears session storage which are all the items in product page
@@ -73,6 +58,8 @@ function toCart() {
     cartCount.innerHTML = numberOfItemsInCart();
     let totalPrice = 0;
     let items = document.getElementById("cart-items");
+    let usernameField = document.getElementById("cart-username");
+    usernameField.value = window.localStorage.getItem("username");
     
     //iterate through keys and find products in cart
     Object.keys(localStorage).forEach(function(key) {

@@ -162,6 +162,22 @@ router.post('/login', function (req, res, next) {
     });
 });
 
+router.get('/get-reviews', function(req, res, next) {
+    connection.query('SELECT * FROM Review ORDER BY Review.rating DESC', [], function(error, results, fields) {
+        if(error) {
+            res.json({
+                status: "failure",
+                body: "Something went wrong with backend"
+            })
+        } else{
+            res.json({
+                status: "success",
+                body: results
+            })
+        }
+    })
+})
+
 //returns task query of all merchandisetypes in a store location
 router.post('/search-bar', function (req, res, next) {
     let body = req.body;
