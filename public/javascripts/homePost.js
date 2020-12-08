@@ -476,6 +476,7 @@ function getOrders() {
             console.log("clicked");
             let outerContainer = document.getElementById("container-orders");
             outerContainer.innerHTML = "";
+            document.getElementById("history-label").innerHTML = customer + "'s History";
             for (const orderNum in data.body) {
                 let arr = data.body[orderNum];
                 let count = 0;
@@ -610,44 +611,6 @@ function submitReview() {
     })
 }
 
-function getRevenue() {
-    fetch('http://localhost:3000/api/get-revenue', {
-        method: 'GET',
-    }).then(response => {
-        return response.json();
-    }).then(data => {
-        if (data.status === "success") {
-            // [{city: xx, state: xx, zip: xx, totalReve: xx}, {city: xx, state: xx, zip: xx, totalRevenue: xx}]
-            data.body.forEach(rowObj => {
-                let city = rowObj.city;
-                let state = rowObj.state;
-                let zip = rowObj.zip;
-                let rev = rowObj.totalRevenue;
-                let data = [city, state, zip, rev];
-                let outContainer = document.getElementById("total-revenue");
-
-                let inContainer = document.createElement("ul");
-                outContainer.appendChild(inContainer);
-                let inContainer1 = document.createElement("li");
-                inContainer1.className = "list-group-item d-flex justify-content-between lh-condensed";
-                inContainer.appendChild(inContainer1);
-                for (let i = 0; i < 4; i++) {
-                    let di = document.createElement("div");
-                    di.className = "col-3";
-                    inContainer1.appendChild(di);
-                    let sm = document.createElement("small");
-                    sm.textContent = data[i];
-                    di.appendChild(sm);
-                }
-            })
-        } else {
-            alert(data.body);
-        }
-    }).catch(err => {
-        alert(err.message);
-    })
-}
-
 function restock() {
     let model = document.getElementById("model-restock").value;
     let brand = document.getElementById("brand-restock").value;
@@ -777,7 +740,7 @@ function loadGetTables(api, parentId) {
                 tableRow.appendChild(num);
                 for (const key in row) {
                     let cell = document.createElement("td");
-                    cell.innerHTML = (key === "Proceeds") ? "$" + row[key] : row[key];
+                    cell.innerHTML = (key === "Proceeds" || key === "totalRevenue") ? "$" + row[key] : row[key];
                     tableRow.appendChild(cell);
                 }
                 parent.appendChild(tableRow);

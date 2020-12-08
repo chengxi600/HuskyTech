@@ -564,7 +564,7 @@ router.get("/get-revenue", function (req, res, next) {
         '(s.state = m.shelfState AND s.city = m.shelfcity AND s.zip = m.shelfZip) ' +
         'INNER JOIN MerchandiseType mt ON (m.brandType = mt.brand AND m.modelType = mt.model) ' +
         'WHERE m.orderId IS NOT NULL and m.customerUsername IS NOT NULL ' +
-        'GROUP BY s.state, s.city, s.zip;', function (err, results, fields) {
+        'GROUP BY s.state, s.city, s.zip ORDER BY totalRevenue DESC;', function (err, results, fields) {
             if (err) {
                 res.json({
                     status: "failure",
