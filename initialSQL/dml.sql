@@ -143,7 +143,7 @@ INSERT INTO OnlineOrder (orderNum, customerUsername, state, ofZip, ofCity, ofSta
 INSERT INTO Employee (firstName, lastName, title, reportTo, username, passkey) VALUES
 ("Nate", "Derbinsky", "CEO", NULL, "ceoDerbinsky", "$2b$10$EF0EGtF8g2nDUZAtKqBZ7.An6wtnDiLh72b2YsYE6WhBnQWApwUh."),
 ("Jayne", "Dwonson", "COO", "ceoDerbinsky", "cooDwonson", "$2b$10$luiihS7/RwoqDvVP1uyBduGAsibI6PuphywhX7zr3pHUrc/U2IgIG"),
-("Hevin", "Kart", "CTO", "ceoDerbinsky", "ctoKart", "$2b$10$JsWfvnC5/Fr6a3DQL1GOiO1iRo3QyamJshetbL4R2HGhZEfYOYr3G",),
+("Hevin", "Kart", "CTO", "ceoDerbinsky", "ctoKart", "$2b$10$JsWfvnC5/Fr6a3DQL1GOiO1iRo3QyamJshetbL4R2HGhZEfYOYr3G"),
 ("Melissa", "Tree", "CFO", "ceoDerbinsky", "cfoTree", "$2b$10$J4O8Y56jtYsWXM6IA5V8lOlbRz1ylpjhpUPSmJ/pTcJAs2crxC4.."),
 ("Samir", "Kumar", "Technology Manager", "ctoKart", "samkumar630", "$2b$10$0r/yLBeFZ9DHb5P79WfwzO2KWCk9zWqPH2oxu2U9z5RktrLyr8e2a"),
 ("Jane", "Doe", "Software Developer", "samkumar630", "jDoe153", "$2b$10$ufOLJOPoqDkYMpebWYvoG.sx/rJD4aNoWsmxhLxtHVkPdptdhNuLW"),
