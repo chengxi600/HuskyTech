@@ -132,7 +132,7 @@ router.post('/login', function (req, res, next) {
                             employeeArr.push(element.username);
                         })
                         if (employeeArr.includes(username)) {
-                            connection.query('SELECT Employee.password FROM Employee ' +
+                            connection.query('SELECT Employee.passkey FROM Employee ' +
                                 'WHERE Employee.username = ' + connection.escape(username), function (error, results, fields) {
                                     let myhash = results[0].password;
                                     bcrypt.compare(password, myhash, function (err, result) {
