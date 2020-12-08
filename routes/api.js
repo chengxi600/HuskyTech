@@ -1,3 +1,5 @@
+//This page contains api routes
+
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql');
