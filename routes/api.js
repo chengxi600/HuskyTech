@@ -730,7 +730,8 @@ router.post('/top-selling-stores', function (req, res, next) {
     'FROM Customer INNER JOIN Orders ON Customer.username = orders.customerUsername INNER JOIN merchandise ON merchandise.orderID = orders.orderNum ' +
     'AND merchandise.customerUsername = orders.customerUsername INNER JOIN Store ON store.city = merchandise.shelfCity AND store.state = merchandise.shelfState AND ' +
     'store.zip = merchandise.shelfZIP LEFT OUTER JOIN review ON customer.username = review.customerUsername AND review.brandType = merchandise.brandType ' +
-    'AND merchandise.modelType = review.modelType WHERE store.city = ? AND store.state = ? AND store.zip = ?;'
+    'AND merchandise.modelType = review.modelType WHERE store.city = ? AND store.state = ? AND store.zip = ? ' +
+    'GROUP BY Customer.username ORDER BY orderCount DESC, AVG(Review.rating);'
 
     connection.query(sqlString, [city, state, zip], function (error, results, fields) {
         if (error) {
