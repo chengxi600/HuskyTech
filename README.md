@@ -7,7 +7,7 @@ Steps to install and run the server:
 2. Download and install XAMPP for the MariaDB MySQL RDBMS.
 3. Clone/Download this repository/Import into your favorite IDE
 4. Use phpmyadmin or the console UI mysql program (located in the XAMPP/mysql/bin) to create the database.
-    - (for phpmyadmin, copy past the ddl and dml files, while for mysql, you must login then use the SOURCE command)
+    - (for phpmyadmin, copy paste the ddl and dml files, while for mysql, you must login then use the SOURCE command)
 5. After successful database creation and population, in XAMPP start the mysql server.
 6. Once inside the HuskyTech/project folder, run the command in the terminal: npm install
     - (this installs all necessary modules to run the server)
