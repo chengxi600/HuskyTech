@@ -3,6 +3,7 @@ const saltRounds = 10;
 const myPlaintextPassword = 'password';
 const someOtherPlaintextPassword = 'not_bacon';
 
+/*This is a test file to familiarize wiht bcrypt */
 let myhash = "";
 bcrypt.genSalt(saltRounds, function(err, salt) {
     bcrypt.hash(myPlaintextPassword, salt, function(err, hash) {
