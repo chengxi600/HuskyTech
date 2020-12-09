@@ -68,7 +68,11 @@
             </div>
             <div class="col-md-8 order-md-1">
                 <h4 class="mb-3">Billing address</h4>
-                <form class="needs-validation" novalidate>
+                <form id="checkout-form" class="needs-validation" onsubmit="(function(){
+                    if(document.getElementById('checkout-form').classList.contains('was-validated')) {
+                        document.location.href = 'http://localhost:3000/u-home'
+                    }
+                  })();return false;" novalidate>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="firstName">First name</label>
@@ -201,7 +205,7 @@
                     </div>
                     <hr class="mb-4">
                     <!-- Post request to add an onlineorder and also reset cart-->
-                    <button class="btn btn-primary btn-lg btn-block" type="button" onclick="submitCart()">Checkout</button>
+                    <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="submitCart()">Checkout</button>
                 </form>
             </div>
         </div>
@@ -225,7 +229,6 @@
     <script type="text/javascript" src="../javascripts/app.js"></script>
     <script src="../javascripts/cartValidation.js"></script>
     <script src="../javascripts/homePost.js"></script>
-    <script 
 
 </body>
 </html>

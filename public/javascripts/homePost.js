@@ -391,7 +391,6 @@ function submitCart() {
                                                 window.localStorage.removeItem(key);
                                             }
                                         })
-                                        document.location.href = "http://localhost:3000/u-home"
                                     }
                                 } else {
                                     alert(data.body);
