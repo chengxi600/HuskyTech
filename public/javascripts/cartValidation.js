@@ -1,3 +1,4 @@
+//Makes sure all information is inputted in the cart form
 (function () {
     'use strict'
   

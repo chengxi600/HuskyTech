@@ -1,13 +1,19 @@
 //This page should contain all functions that communicates with the backend
-//TODO: add clear cart button
-//login button onclick
+
+//-----Login/Signup Page functions-----
+
+/*
+    Sends a login in request to the server. Expects a json response. If the json
+    response has the status of "success", redirect to url given by the server, either the
+    user homepage or the employee homepage based on the credentials. If there's an error
+    pop an alert.
+*/
 function sendLoginPost() {
     let userName = document.getElementById("login-username-form").value;
     let password = document.getElementById("login-password-form").value;
     //data to be sent to backend
     let data = { username: userName, password: password }
     console.log(data);
-
 
     fetch('http://localhost:3000/api/login', { //current url of the server
         method: 'POST',
@@ -32,7 +38,12 @@ function sendLoginPost() {
     })
 }
 
-//signup button onclick 
+/*
+    Sends a sign in request to the server. Expects a json response. If the json
+    response has the status of "success", redirect to url given by the server, currently
+    the user homepage. If there's an error pop an alert. The server will add the credentials
+    to the Customer table of the homepage.
+*/
 function sendSignUpPost() {
     let userName = document.getElementById("signup-username-form").value;
     let password = document.getElementById("signup-password-form").value;
@@ -60,6 +71,7 @@ function sendSignUpPost() {
         }).then(data => {
             console.log(data.status);
             if (data.status === "success") {
+                //sets the window's local storage to the username that the user signed up with
                 window.localStorage.setItem("username", userName)
                 document.location.href = data.body;
             } else {
@@ -73,8 +85,11 @@ function sendSignUpPost() {
     }
 }
 
-//getting top rated brand and model task query from backend
-//should be called when home page is loaded
+/* 
+    Gets the top rated brand and model task query from backend in a json response,
+    then processes the json response displaying the name, brand, and rating in stars.
+    This function is called when the webpage is loaded.
+*/
 function getTopRatedModel() {
     fetch('http://localhost:3000/api/top-rated', {
         method: 'GET',
@@ -111,7 +126,73 @@ function getTopRatedModel() {
     })
 }
 
-//Products page searchbutton onclick
+
+/*
+    This function makes a GET Request that gets the first specified number of review
+    from the backend. This function returns a promise. 
+    Expecting a json response and resolves a Javascript array representation of the data.
+    Popping an alert if there is an error.
+*/
+function getReviews(numberOfReviews) {
+    let promise = new Promise((resolve, reject) => {
+        fetch('http://localhost:3000/api/get-reviews', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            if (data.status === "failure") {
+                alert(data.body)
+            } else {
+                resolve(data.body.slice(0, numberOfReviews));
+            }
+        }).catch(err => {
+            alert("Somethign went wrong with get request");
+        })
+    })
+    return promise;
+}
+
+/*
+    Function is called on window load of the home page. Requests 4 reviews to
+    fill the DOM of the carousel in the home page. 
+*/
+function getReviewsHome() {
+    //This is a promise that is executed only after getting the 4 reviews as it is async
+    getReviews(4).then((reviews) => {
+        let reviewProducts = document.getElementsByClassName("home-review-product");
+        for (let i = 0; i < reviews.length; i++) {
+            document.getElementById("home-review-" + (i + 1)).innerHTML = formatReviewHome(reviews[i]);
+            document.getElementById("home-review-product-" + (i + 1)).innerHTML = reviews[i].brandType + " " + reviews[i].modelType;
+            //creating rating stars favicon
+            for (let j = 0; j < 10; j++) {
+                let star = document.createElement("span");
+                if (j < reviews[i].rating) {
+                    star.className = "fa fa-star checked";
+
+                } else {
+                    star.className = "fa fa-star";
+                }
+                reviewProducts[i].appendChild(star);
+            }
+        }
+    })
+}
+
+function formatReviewHome(reviewData) {
+    return "\"" + reviewData.descr + "\" - " + reviewData.customerUsername;
+}
+
+//-----Products Page functions-----
+
+/*
+    This button sends a request to retrieve all the information from a given store's
+    address. This request also takes into consideration on how to sort the data on price.
+    This request expects a json response and process the response to have a card web element
+    display each item for sale. With a links to write reviews and add to cart.
+*/
 function searchButton() {
     // clear session storage which holds the current search result products
     Object.keys(sessionStorage).forEach(function (key) {
@@ -168,7 +249,7 @@ function searchButton() {
                 //count that ids the current search result product
                 let count = 0;
 
-                //for each product, create a HTML card in DOM
+                //for each product, create a HTML card in DOM, filling in data with json response
                 data.body.forEach(product => {
                     let containerDiv = document.createElement("div");
                     containerDiv.className = "col-3 card-container";
@@ -276,6 +357,13 @@ function searchButton() {
     }
 }
 
+//-----Cart Page functions-----
+
+/*
+    Sends a request to get the current order number for a given customer. Expects a json response.
+    If an error occurs, have an alert. Otherwise return the order number and increment it by one.
+    Returns a promise that resolves the order number + 1.
+*/
 function getOrderNumber() {
     let promise = new Promise((resolve, reject) => {
         let data = [window.localStorage.getItem("username")];
@@ -300,6 +388,11 @@ function getOrderNumber() {
     return promise;
 }
 
+/*
+    Makes a POST request to submit a new order to the database for the given customer 
+    and given order number. Expects a json response. This function returns a promise. 
+    If there is an error, pop an alert. Otherwise resolve.
+*/
 function submitOrder(oNum, username) {
     let promise = new Promise((resolve, reject) => {
         fetch('http://localhost:3000/api/submit-order', {
@@ -323,30 +416,15 @@ function submitOrder(oNum, username) {
     return promise;
 }
 
-function getReviews(numberOfReviews) {
-    let promise = new Promise((resolve, reject) => {
-        fetch('http://localhost:3000/api/get-reviews', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response) => {
-            return response.json();
-        }).then((data) => {
-            if (data.status === "failure") {
-                alert(data.body)
-            } else {
-                resolve(data.body.slice(0, numberOfReviews));
-            }
-        }).catch(err => {
-            alert("Somethign went wrong with get request");
-        })
-    })
-    return promise;
-}
-
+/*
+    This function submits a cart order for the customer. First it gets the current max order number 
+    of a customer then increments it by one so this order number is unique. Then it grabs form values 
+    then get serial numbers of the items in the cart. Then it submits a request to create an order for 
+    the customer. Then this function creates an online order for this customer and order information. Then
+    finally the items ordered are updated and placed in the customer's name and order number.
+*/
 function submitCart() {
-    getOrderNumber().then((oNum) => {
+    getOrderNumber().then((oNum) => { //get new order number
         console.log("1 Order Number : " + oNum);
         let username = document.getElementById("cart-username").value;
         let address = document.getElementById("address").value;
@@ -354,7 +432,7 @@ function submitCart() {
         let state = document.getElementById("state").value;
         let zip = document.getElementById("zip").value;
         let status = "sent";
-        getSerialNumbers().then(serials => {
+        getSerialNumbers().then(serials => { //get cart item serial numbers as array
             console.log("2 Serial Numbers :" + serials);
             //submit an order
             submitOrder(oNum, username).then(() => {
@@ -370,7 +448,7 @@ function submitCart() {
                     return response.json();
                 }).then(data => {
                     if (data.status === "success") {
-                        //update inventory
+                        //iterates through every serial number and updates the Merchandise's orderID and customerUsername attributes
                         let count = 0;
                         serials.forEach(function (serial) {
                             fetch('http://localhost:3000/api/update-merchandise', {
@@ -397,7 +475,6 @@ function submitCart() {
                                     alert(data.body);
                                 }
                             })
-                            //remove all cart items
                         })
                     } else {
                         alert(data.body)
@@ -411,7 +488,12 @@ function submitCart() {
     });
 }
 
-//gets serial numbers of cart items
+/*
+    Gets the serial numbers of cart items from the local storage of the window. Returning 
+    a Promise that resolves into an array of the serial numbers. Runs a request to get the 
+    serial number for each item in local storage to the server, adding it to the array on success.
+    Resolving only when every item has been processed.
+*/
 function getSerialNumbers() {
     let overallPromise = new Promise((overallResolve, overallReject) => {
         let brands = [];
@@ -420,6 +502,7 @@ function getSerialNumbers() {
         let shelfStates = [];
         let shelfZIPs = [];
 
+        //iterates through all the products in the cart and fills several arrays of their attributes
         Object.keys(window.localStorage).forEach(function (key) {
             if (key.includes("cart")) {
                 let product = JSON.parse(window.localStorage.getItem(key));
@@ -437,14 +520,17 @@ function getSerialNumbers() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                //for every product, send their information and make a fetch api 
                 body: JSON.stringify([brands[i], models[i], shelfCities[i], shelfStates[i], shelfZIPs[i]])
             }).then(response => {
                 return response.json()
             }).then(data => {
                 if (data.status === "success") {
+                    //adds the serial number from response into an array which is to be returned
                     cartSerialNumbers.push(data.body);
                     console.log(cartSerialNumbers);
                     if (i === brands.length - 1) {
+                        //resolve and return the array of serial numbers when we are done fetching all the products serial numbers
                         overallResolve(cartSerialNumbers);
                     }
                 } else {
@@ -458,6 +544,102 @@ function getSerialNumbers() {
     return overallPromise;
 }
 
+//-----Review Page functions-----
+
+/*
+    Gets the product being reviewed from sessionStorage, customer's username from 
+    localStorage, and the rating and description from the DOM. Runs a request and
+    submit the review
+
+*/
+function submitReview() {
+    let reviewProduct = JSON.parse(sessionStorage.getItem("reviewItem"));
+    let brandType = reviewProduct.brand;
+    let modelType = reviewProduct.model;
+    let customerUsername = localStorage.getItem("username");
+    let rating = document.getElementById("review-slider").value;
+    let descr = document.getElementById("review-textarea").value;
+
+    fetch('http://localhost:3000/api/submit-review', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify([brandType, modelType, customerUsername, rating, descr])
+
+    }).then(response => {
+        return response.json();
+    }).then(data => {
+        if (data.status === "success") {
+            //submitted review
+            alert("Review Submitted!");
+        } else {
+            alert(data.body);
+        }
+    })
+}
+
+/*
+    This function is called upon window load of the review page. Gets the current
+    review item from sessionStorage and updates the DOM the displays the top two 
+    reviews in the database. 
+*/
+function loadReviewPage() {
+    let brandName = document.getElementById('review-brand');
+    let priceName = document.getElementById('review-price');
+
+    let reviewProduct = JSON.parse(sessionStorage.getItem("reviewItem"));
+
+    brandName.innerHTML = reviewProduct.brand + " " + reviewProduct.model;
+    priceName.innerHTML = "Price: $" + reviewProduct.price;
+
+    //Only executes after getting the reviews as this is async
+    getReviews(2).then((reviews) => {
+        //creates the DOM for the reviews
+        for (let i = 0; i < reviews.length; i++) {
+            let review = reviews[i];
+            let rating = review.rating;
+
+            document.getElementById("product-review-label-" + (i + 1)).innerHTML = review.brandType + " " + review.modelType;
+
+            let parentStar = document.getElementById("single-review-" + (i + 1));
+            //making checked rating stars
+            for (let i = 0; i < rating; i++) {
+                let star = document.createElement("span");
+                star.className = "fa fa-star checked";
+                parentStar.appendChild(star);
+            }
+            //making unchecked rating stars
+            for (let i = 0; i < 10 - rating; i++) {
+                let star = document.createElement("span");
+                star.className = "fa fa-star";
+                parentStar.appendChild(star);
+            }
+
+
+            let label = document.createElement("label");
+            label.for = "rating";
+            label.className = "block";
+            label.innerHTML = "Review";
+            let para = document.createElement("p");
+            para.id = "review-review-" + i;
+            para.innerHTML = "\"" + review.descr + "\"" + " By " + review.customerUsername;
+            para.style = "margin-bottom: 15%;";
+
+            parentStar.appendChild(label);
+            parentStar.appendChild(para);
+        }
+    })
+}
+
+
+//-----Employee Home Page functions-----
+
+/*
+    This function sends a request to the server to get all orders for a customer and the order 
+    information and creates web elements to display the order information, updating the webpage 
+    on success.
+*/
 function getOrders() {
     let customer = document.getElementById("usernameInput").value;
     let data = { username: customer };
@@ -470,13 +652,15 @@ function getOrders() {
         body: JSON.stringify(data)
     }).then(response => {
         return response.json()
-    }).then(data => {
+    }).then(data => { //expects a json response of all the orders
         if (data.status === "success") {
-            //edit DOM      
+            //edit DOM with a card for every order     
             console.log("clicked");
             let outerContainer = document.getElementById("container-orders");
             outerContainer.innerHTML = "";
+            //change the label so it displays the customer username
             document.getElementById("history-label").innerHTML = customer + "'s History";
+            //creating each order in the DOM
             for (const orderNum in data.body) {
                 let arr = data.body[orderNum];
                 let count = 0;
@@ -534,6 +718,12 @@ function getOrders() {
     })
 }
 
+/*
+    This function send a POST request to the backend to update the state of an 
+    order. The order specified is determined by the username and customer username given.
+    The request expects a json response containing an attribtue representing the status of the request.
+    An alert displays whether the POST request was successful or not.
+*/
 function updateOrderState(event) {
     let cusNum = event.target.className;
     let orderNum = event.target.id;
@@ -558,7 +748,12 @@ function updateOrderState(event) {
     })
 }
 
-//TODO:
+/*
+    This function sends a POST request to the backend to add a new merchandise type to the
+    server's database. The request takes in a brand, model, and price value which is sent to
+    the server and is used to represent the new merchandise type. An alert is displayed whether
+    the request was successful or not.
+*/
 function addMerchType() {
     let brand = document.getElementById("brand-input").value;
     let model = document.getElementById("model-input").value;
@@ -584,33 +779,11 @@ function addMerchType() {
     })
 }
 
-function submitReview() {
-    let reviewProduct = JSON.parse(sessionStorage.getItem("reviewItem"));
-    let brandType = reviewProduct.brand;
-    let modelType = reviewProduct.model;
-    let customerUsername = localStorage.getItem("username");
-    let rating = document.getElementById("review-slider").value;
-    let descr = document.getElementById("review-textarea").value;
-
-    fetch('http://localhost:3000/api/submit-review', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify([brandType, modelType, customerUsername, rating, descr])
-
-    }).then(response => {
-        return response.json();
-    }).then(data => {
-        if (data.status === "success") {
-            //submitted review
-            alert("Review Submitted!");
-        } else {
-            alert(data.body);
-        }
-    })
-}
-
+/*
+    This function will send a POST Request to the server that updates the database to include
+    a new merchandise item of the given model, brand, city of location, state of location, and zip of location.
+    The request expects a JSON resposne and will throw an alert to the body attribute of the response.
+*/
 function restock() {
     let model = document.getElementById("model-restock").value;
     let brand = document.getElementById("brand-restock").value;
@@ -640,83 +813,13 @@ function restock() {
 }
 
 
-//function loads the review page
-function loadReviewPage() {
-    let brandName = document.getElementById('review-brand');
-    let priceName = document.getElementById('review-price');
+//-----Report Queries Page functions-----
 
-    let reviewProduct = JSON.parse(sessionStorage.getItem("reviewItem"));
-
-    brandName.innerHTML = reviewProduct.brand + " " + reviewProduct.model;
-    priceName.innerHTML = "Price: $" + reviewProduct.price;
-
-    getReviews(2).then((reviews) => {
-        for (let i = 0; i < reviews.length; i++) {
-            let review = reviews[i];
-            let rating = review.rating;
-
-            document.getElementById("product-review-label-" + (i + 1)).innerHTML = review.brandType + " " + review.modelType;
-
-            let parentStar = document.getElementById("single-review-" + (i + 1));
-            //making checked rating stars
-            for (let i = 0; i < rating; i++) {
-                let star = document.createElement("span");
-                star.className = "fa fa-star checked";
-                parentStar.appendChild(star);
-            }
-            //making unchecked rating stars
-            for (let i = 0; i < 10 - rating; i++) {
-                let star = document.createElement("span");
-                star.className = "fa fa-star";
-                parentStar.appendChild(star);
-            }
-
-
-            let label = document.createElement("label");
-            label.for = "rating";
-            label.className = "block";
-            label.innerHTML = "Review";
-            let para = document.createElement("p");
-            para.id = "review-review-" + i;
-            para.innerHTML = "\"" + review.descr + "\"" + " By " + review.customerUsername;
-            para.style = "margin-bottom: 15%;";
-
-            parentStar.appendChild(label);
-            parentStar.appendChild(para);
-        }
-    })
-}
-
-//function loads the review home
-function getReviewsHome() {
-    getReviews(4).then((reviews) => {
-        let reviewProducts = document.getElementsByClassName("home-review-product");
-        for (let i = 0; i < reviews.length; i++) {
-            document.getElementById("home-review-" + (i + 1)).innerHTML = formatReviewHome(reviews[i]);
-            document.getElementById("home-review-product-" + (i + 1)).innerHTML = reviews[i].brandType + " " + reviews[i].modelType;
-            //creating rating stars favicon
-            for (let j = 0; j < 10; j++) {
-                let star = document.createElement("span");
-                if (j < reviews[i].rating) {
-                    star.className = "fa fa-star checked";
-
-                } else {
-                    star.className = "fa fa-star";
-                }
-                reviewProducts[i].appendChild(star);
-            }
-        }
-    })
-}
-
-function formatReviewHome(reviewData) {
-    return "\"" + reviewData.descr + "\" - " + reviewData.customerUsername;
-}
-
-//Loads get request query results.
-//Params: 
-//api: api address of get request
-//parentId: id of table body for query result html
+/*
+    This function takes in an api address and the parentID of the table body where
+    the rows are to be inserted. The function will send a get request that
+    returns all the rows for a query, then display them as a table.
+*/
 function loadGetTables(api, parentId) {
     fetch(api, {
         method: 'GET',
@@ -730,14 +833,18 @@ function loadGetTables(api, parentId) {
             alert(data.body);
         } else {
             console.log(data.body);
+            //parent table body
             let parent = document.getElementById(parentId);
             let count = 1;
+            //iterate through each row in query result
             data.body.forEach(function (row) {
+                //create the table row
                 let tableRow = document.createElement("tr");
                 let num = document.createElement("th");
                 num.scope = "row";
                 num.innerHTML = count;
                 tableRow.appendChild(num);
+                //for every attribute in a row, insert a table data
                 for (const key in row) {
                     let cell = document.createElement("td");
                     cell.innerHTML = (key === "Proceeds" || key === "totalRevenue") ? "$" + row[key] : row[key];
@@ -752,11 +859,12 @@ function loadGetTables(api, parentId) {
     })
 }
 
-//Loads post request query results.
-//Params: 
-//api: api address of get request
-//params: array of parameters for post request
-//parentId: id of table body for query result html
+/*
+    This function takes in an api address, parameters, and the parentID for the table body.
+    The function executes a request to the api address with given
+    parameters and inserts new elements into the table body to display the query results as 
+    a table.
+*/
 function loadPostTables(api, params, parentId) {
     fetch(api, {
         method: 'POST',
@@ -770,15 +878,19 @@ function loadPostTables(api, params, parentId) {
         if (data.status === "failure") {
             alert(data.body);
         } else {
+            //clears the table body
             document.getElementById(parentId).innerHTML = "";
             let parent = document.getElementById(parentId);
             let count = 1;
+            //iterate through every row in the query results
             data.body.forEach(function (row) {
+                //create the row
                 let tableRow = document.createElement("tr");
                 let num = document.createElement("th");
                 num.scope = "row";
                 num.innerHTML = count;
                 tableRow.appendChild(num);
+                //iterate through every attribute in a row and create a table data.
                 for (const key in row) {
                     let cell = document.createElement("td");
                     cell.innerHTML = (key === "Proceeds") ? "$" + row[key] : row[key];
@@ -793,13 +905,20 @@ function loadPostTables(api, params, parentId) {
     })
 }
 
+/*
+    This function facilitates the functionality of all the report tables of the employee report webpage. This function is run when the 
+    webpage is loaded. For the tables that do not take parameters, requests are made to fill the tables immediately in the function
+    loadGetTables(api address, id of table body). For tables that take parameters, this function ensures the buttons associated with
+    the tables are introduced an onclick handler function that populates the respective tables with values after making requests 
+    with parameters to the server.
+*/
 function loadEmployeePageTables() {
     loadGetTables('http://localhost:3000/api/get-quota-stores', 'quota-table-body');
     loadGetTables('http://localhost:3000/api/sales-and-employees', 'manager-table-body');
 
     // Discount
     document.getElementById("discount-button").addEventListener("click", () => {
-        
+
         loadPostTables('http://localhost:3000/api/discount', [
             document.getElementById("discountBrandInput").value, document.getElementById("amountInput").value], "discount-customers-table");
     });
@@ -813,7 +932,7 @@ function loadEmployeePageTables() {
     //Store information
     document.getElementById("specific-stores").addEventListener("click", () => {
         loadPostTables('http://localhost:3000/api/top-selling-stores', [document.getElementById("cityInput").value,
-            document.getElementById("stateInput").value, document.getElementById("zipInput").value], "store-info-table");
-            
+        document.getElementById("stateInput").value, document.getElementById("zipInput").value], "store-info-table");
+
     });
 }
