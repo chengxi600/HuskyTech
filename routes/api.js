@@ -1,3 +1,5 @@
+//This page contains api routes
+
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql');
@@ -25,6 +27,7 @@ connection.connect(function (err) {
     console.log('Connected to database server as id ' + connection.threadId);
 });
 
+//------LOGIN/SIGNUP page routes-----
 
 //check if username exists, if not add it to database, adding a salted and hashed password
 router.post('/signup', function (req, res, next) {
@@ -162,6 +165,9 @@ router.post('/login', function (req, res, next) {
     });
 });
 
+//-----Customer Home page routes-----
+
+//Gets all reviews in the database
 router.get('/get-reviews', function (req, res, next) {
     connection.query('SELECT * FROM Review ORDER BY Review.rating DESC', [], function (error, results, fields) {
         if (error) {
@@ -179,7 +185,39 @@ router.get('/get-reviews', function (req, res, next) {
     })
 })
 
-//returns task query of all merchandisetypes in a store location
+//Task Query: Get the highest rated brand and model
+//Gets the brand, model, and rating of the top rated MerchandiseType
+router.get('/top-rated', function (req, res, next) {
+    connection.query('SELECT p.brandName, p.modelName, p.rating ' +
+        'FROM (SELECT mt.brand as brandName, mt.model as modelName, AVG(r.rating) as rating ' +
+        'FROM merchandiseType mt INNER JOIN review r ON (mt.brand = r.brandType AND mt.model = r.modelType) ' +
+        'GROUP BY mt.brand, mt.model) p INNER JOIN ' +
+        '(SELECT AVG(r.rating) as rating ' +
+        'FROM MerchandiseType mt ' +
+        'INNER JOIN review r ON (mt.brand = r.brandType AND mt.model = r.modelType) ' +
+        'GROUP BY mt.brand, mt.model ' +
+        'ORDER BY rating  DESC ' +
+        'LIMIT 1) q ON p.rating = q.rating;', function (error, results, fields) {
+            if (error) {
+                res.json({
+                    status: "failure",
+                    body: "Something went wrong with the database."
+                })
+            } else {
+                res.json({
+                    status: "success",
+                    body: results[0]
+                })
+            }
+        })
+})
+
+
+//-----Products Page routes-----
+
+//Task Query: Get a list of merchandises selling at a specific store in descending order by price
+//Task Query: Get the total inventory of a specific merchandise type at a selected store
+//Returns a MerchandiseType's brand, model, price, and inventory at a specific store location.
 router.post('/search-bar', function (req, res, next) {
     let body = req.body;
     let city = body[0];
@@ -289,51 +327,9 @@ router.post('/search-bar', function (req, res, next) {
     }
 })
 
-router.post('/submit-review', function (req, res, next) {
-    console.log(req.body[0] + req.body[1] + req.body[2] + req.body[3] + req.body[4])
-    connection.query('INSERT INTO Review(brandType, modelType, customerUsername, rating, descr) VALUES (?, ?, ?, ?, ?);',
-        [req.body[0], req.body[1], req.body[2], req.body[3], req.body[4]], function (error, results, fields) {
-            if (error) {
-                res.json({
-                    status: "failure",
-                    body: "Something went wrong with the database."
-                })
-            } else {
-                res.json({
-                    status: "success",
-                    body: "Review went through"
-                })
-            }
-        })
-})
+//-----Cart Page routes-----
 
-//returns the get rated brand and model 
-router.get('/top-rated', function (req, res, next) {
-    connection.query('SELECT p.brandName, p.modelName, p.rating ' +
-        'FROM (SELECT mt.brand as brandName, mt.model as modelName, AVG(r.rating) as rating ' +
-        'FROM merchandiseType mt INNER JOIN review r ON (mt.brand = r.brandType AND mt.model = r.modelType) ' +
-        'GROUP BY mt.brand, mt.model) p INNER JOIN ' +
-        '(SELECT AVG(r.rating) as rating ' +
-        'FROM MerchandiseType mt ' +
-        'INNER JOIN review r ON (mt.brand = r.brandType AND mt.model = r.modelType) ' +
-        'GROUP BY mt.brand, mt.model ' +
-        'ORDER BY rating  DESC ' +
-        'LIMIT 1) q ON p.rating = q.rating;', function (error, results, fields) {
-            if (error) {
-                res.json({
-                    status: "failure",
-                    body: "Something went wrong with the database."
-                })
-            } else {
-                res.json({
-                    status: "success",
-                    body: results[0]
-                })
-            }
-        })
-})
-
-//returns a new order number, should be max_num +1 
+//Returns the highest current order number of a specfic customer
 router.post('/order-number', function (req, res, next) {
     let username = req.body[0];
     console.log(username);
@@ -361,6 +357,7 @@ router.post('/order-number', function (req, res, next) {
         })
 })
 
+//Submits an online order
 router.post('/submit-online-order', function (req, res, next) {
     let body = req.body;
     let oNum = body[0];
@@ -391,6 +388,7 @@ router.post('/submit-online-order', function (req, res, next) {
         })
 })
 
+//Task Query: Create an order for a customer
 router.post('/submit-order', function (req, res, next) {
     let body = req.body;
     let oNum = body[0];
@@ -409,6 +407,7 @@ router.post('/submit-order', function (req, res, next) {
     })
 })
 
+//Gets a serial number of a Merchandise given a MerchandiseType and a store.
 router.post('/serial-number', function (req, res, next) {
     let body = req.body;
     let brand = body[0];
@@ -435,6 +434,7 @@ router.post('/serial-number', function (req, res, next) {
         })
 })
 
+//Updates an existing merchandise by setting the orderID and customerUsername attribues after an online order.
 router.post('/update-merchandise', function (req, res, next) {
     let body = req.body;
     let serial = body[0];
@@ -460,6 +460,30 @@ router.post('/update-merchandise', function (req, res, next) {
         })
 })
 
+//-----Review Page routes-----
+
+//Task Query: Create a review for a customer
+router.post('/submit-review', function (req, res, next) {
+    console.log(req.body[0] + req.body[1] + req.body[2] + req.body[3] + req.body[4])
+    connection.query('INSERT INTO Review(brandType, modelType, customerUsername, rating, descr) VALUES (?, ?, ?, ?, ?);',
+        [req.body[0], req.body[1], req.body[2], req.body[3], req.body[4]], function (error, results, fields) {
+            if (error) {
+                res.json({
+                    status: "failure",
+                    body: "Something went wrong with the database."
+                })
+            } else {
+                res.json({
+                    status: "success",
+                    body: "Review went through"
+                })
+            }
+        })
+})
+
+//-----Employee Home Page routes-----
+
+//Given a customer username, gets all the customer's past orders including the MerchandiseTypes of an order.
 router.post('/getOrders', function (req, res, next) {
     let customer = req.body.username;
     //Query
@@ -472,6 +496,7 @@ router.post('/getOrders', function (req, res, next) {
                 })
             } else {
                 let returnObj = {};
+                //Promise here so api only returns a response after getting all MerchandiseTypes of every order 
                 let promise = new Promise((resolve, reject) => {
                     let count = 0;
                     results.forEach(result => {
@@ -507,7 +532,7 @@ router.post('/getOrders', function (req, res, next) {
         })
 });
 
-
+//Task Query: Add a new merchandise type
 router.post('/addMerchType', function (req, res, next) {
     let brand = req.body[0];
     let model = req.body[1];
@@ -528,6 +553,8 @@ router.post('/addMerchType', function (req, res, next) {
         });
 });
 
+//Task Query: Update the status of an online order for a customer
+//Task Query: Get the total price of an order for a customer
 router.post('/update-order-status', function (req, res, next) {
     let customerUsername = req.body[0];
     let orderNum = req.body[1];
@@ -547,18 +574,7 @@ router.post('/update-order-status', function (req, res, next) {
         })
 })
 
-
-
-// ----------------------------Build this Query----------------------------
-// SELECT s.state, s.city, s.zip, SUM(mt.price)
-// FROM store s 
-// LEFT JOIN Merchandise m ON (s.state = m.shelfState AND s.city = m.shelfcity AND s.zip = m.shelfZip)
-// INNER JOIN MerchandiseType mt ON (m.brandType = mt.brand AND m.modelType = mt.model)
-// WHERE m.orderId IS NOT NULL and m.customerID IS NOT NULL
-// GROUP BY s.state, s.city, s.zip;
-
-
-
+//Task Query: Get the total revenue of every stores
 router.get("/get-revenue", function (req, res, next) {
     connection.query('SELECT s.city as city, s.state as state, s.zip as zip, SUM(mt.price) as totalRevenue FROM store s LEFT JOIN Merchandise m ON ' +
         '(s.state = m.shelfState AND s.city = m.shelfcity AND s.zip = m.shelfZip) ' +
@@ -580,12 +596,7 @@ router.get("/get-revenue", function (req, res, next) {
         })
 })
 
-
-// ----------------------------Build this Query----------------------------
-// INSERT INTO merchandise
-// VALUES
-// (Random Generated, Model, Brand, City, State, Zip, null, null);
-
+//Task Query:  Add new merchandise (restock)
 router.post('/restock', function (req, res, next) {
     let body = req.body;
     let serial = "#" + Math.floor(Math.random() * (10 ** 5));
@@ -611,6 +622,18 @@ router.post('/restock', function (req, res, next) {
         });
 })
 
+//-----Report Queries Page routes-----
+
+/*
+Report 1: Get the list of customers who are eligible to receive a brand discount, ordered by lastName, customerID (A customer can receive a discount if they spend more than a certain amount of dollars on the brand’s products (ex. Apple) at a single location):
+
+Complex Justification
+    1. # Table joined >= 3 
+    2. # of subqueries = 1
+    3. aggregate functions = Yes
+    4. Grouping = Yes
+    5. # ordering fields >= 2
+*/
 router.post('/discount', function (req, res, next) {
     let body = req.body;
     let brand = body[0];
@@ -638,6 +661,17 @@ router.post('/discount', function (req, res, next) {
     })
 })
 
+/*
+Report 2: Get the list of stores that have already met their quarterly goal of selling at least $2000 worth of merchandise (either online or in-person). However, a store cannot count an online order as a successful sale if it was lost in the mail. Order the stores by the amount of proceeds they’ve made in descending order; break ties by ordering the stores in alphabetical order of the US state that they’re located in:
+
+Complex Justification
+    1. # Tables joined >= 3
+    2. # of subqueries = 2
+    3. Aggregate function = Yes
+    4. Grouping = Yes
+    5. Ordering fields > 1 
+    6. WHERE/Having > 1
+*/
 router.get('/get-quota-stores', function (req, res, next) {
     let sqlString = '' +
         'SELECT Store.State, Store.City, Store.Zip, SUM(MerchandiseType.price) AS Proceeds ' +
@@ -666,7 +700,16 @@ router.get('/get-quota-stores', function (req, res, next) {
     })
 })
 
+/*
+Report 3: Get the amount of employees working under managers combined with the amount of sales within the store the manager manages, and order the results by amount of sales then amount of employees:
 
+Complexity Justification
+    1. # Tables Joined >= 3
+    2. # of subqueries = 2
+    3. Aggregate function = Yes
+    4. Group = Yes
+    5. Ordering Fields > 1
+*/
 router.get('/sales-and-employees', function (req, res, next) {
     let sqlString = 'SELECT q.manager, p.revenue , q.employees FROM  (SELECT e.reportTo as manager, COUNT(e.username) as employees ' +
         'FROM Employee e GROUP BY manager) q INNER JOIN (SELECT s.manager, SUM(mt.price) as revenue FROM store s ' +
@@ -690,6 +733,17 @@ router.get('/sales-and-employees', function (req, res, next) {
 })
 
 
+/*
+Report 4: Get the number of orders and average rating for a given brand and all models unioned together, ordered by average rating, then number of orders. Returns the models whose rating is above a given threshold:
+
+Complexity Justification
+    1. # Tables Join >= 3
+    2. Aggregate Functions = Yes
+    3. Grouping = Yes
+    4. # ordering fields > 1
+    5. WHERE/HAVING > 1
+    6. Non-aggregation functions or expressions in Select/Where = Yes
+*/
 router.post('/most-popular-ratings', function (req, res, next) {
     let body = req.body;
     let brand = body[0];
@@ -719,6 +773,17 @@ router.post('/most-popular-ratings', function (req, res, next) {
     })
 })
 
+/*
+Report 5 - Given a store, get a list of customers with the sum of the orders and online orders purchased by the customer, also return the average review a customer has made:
+
+Complexity Justification
+    1. # Tables joined >= 3
+    2. Non-inner = Yes
+    3. Aggregate Function = Yes
+    4. Grouping = Yes
+    5. # Ordering fields = Yes
+    6. Non-aggregation functions or expressions in Select/Where = Yes
+*/
 router.post('/top-selling-stores', function (req, res, next) {
     let body = req.body;
     let city = body[0];
