@@ -5,7 +5,7 @@ Our project uses a NodeJS backend using the express framework. The server's main
 Steps to install and run the server:
 1. Download Node.JS
 2. Download and install XAMPP for the MariaDB MySQL RDBMS.
-3. Clone/Download this repository
+3. Clone/Download this repository/Import into your favorite IDE
 4. Use phpmyadmin or the console UI mysql program (located in the XAMPP/mysql/bin) to create the database.
     - (for phpmyadmin, copy past the ddl and dml files, while for mysql, you must login then use the SOURCE command)
 5. After successful database creation and population, in XAMPP start the mysql server.
