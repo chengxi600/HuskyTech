@@ -1,5 +1,5 @@
 # HuskyTech
-<<<<<<< HEAD
+
 Our project uses a NodeJS backend using the express framework. The server's main logic is in the /app.js file with the routing logic within the /routes folder. Additionally there is a script/boilerplate code to start the server located in the /bin/www where run configurations like which port to listen on. To run this script, you must make sure you have node installed, this allowed javascript to be run outside the browser. Please download the latest version here: https://nodejs.org/en/ For MariaDB (included with other programs like FileZilla and phpMyAdmin) please download and install XAMPP from https://www.apachefriends.org/index.html.
 
 Steps to install and run the server:
@@ -15,6 +15,3 @@ Steps to install and run the server:
 8.) Open your favorite browser and go to the url of the server (default: http://localhost:3000/)
 
 ### Breaking down /app.js and /bin/www
-=======
-Tasks Queries: Update an online order for a customer Create a purchase an order for a customer Create a review for a customer Add a new merchandise type Add a new merchandise Get the total price of an order of a customer. Get a list of merchandises selling at a specific store in descending order by price Get the total revenue of specific store Get the highest rated brand and model Get the total inventory of a specific merchandise type at a selected store.
->>>>>>> f13dcd9393aa137b0b99a56a72722d75a9f16b1f
