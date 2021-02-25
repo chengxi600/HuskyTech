@@ -1,5 +1,28 @@
 # HuskyTech
 ![HuskyTech intro banner](./public/images/huskytech-banner.png)
+
+## Welcome to HuskyTech
+HuskyTech is a mock online store that has a fully fleshed out front-end, api, and back-end. The tech stack includes HTML/CSS/JS, MySQL, and Node.JS (express framework). This project has all the features necessary for an online store for users and for employees. The store is represented in a 3NF relation schema outlined below.
+![Logical diagram for database](./public/images/erd.png)
+
+## Homepage
+Authentication and authorization helps us set apart users for the main site and employees for the employee portal. If an user does not have an existing account, they can sign up. All user passwords are salted and hashed before added to the database.
+![Login page](./public/images/login.png)
+![Sign up page](./public/images/sign_up.png)
+
+
+## Users
+Users can browse merchandise, write and read reviews, create carts and order! Orders and merchandise are pulled and updated in real time, obeying ACID principles.
+![Products Page](./public/images/products_page.png)
+![Cart Page](./public/images/cart_page.png)
+
+## Employees
+The Employee Portal contains reports for each store location, best-selling devices, devices elligible for discounts, etc. These reports are generated real time from the database.
+![Dynamic data](./public/images/dynamic_data.png)
+![Employee Homepage](./public/images/e_home.png)
+![Employee Report page](./public/images/e_reports.png)
+
+## Misc.
 Our project uses a NodeJS backend using the express framework. The server's main logic is in the /app.js file with the routing logic within the /routes folder. Additionally there is a script/boilerplate code to start the server located in the /bin/www where run configurations like which port to listen on. To run this script, you must make sure you have node installed, this allowed javascript to be run outside the browser. Please download the latest version here: https://nodejs.org/en/ For MariaDB (included with other programs like FileZilla and phpMyAdmin) please download and install XAMPP from https://www.apachefriends.org/index.html.
 
 Steps to install and run the server:
